@@ -1,3 +1,7 @@
+---
+typora-copy-images-to: images
+---
+
 # MyNotes
 
 
