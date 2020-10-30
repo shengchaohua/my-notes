@@ -983,7 +983,7 @@ public void run() {
 
 Monitor结构如下图所示（图片来自 Java并发编程 课件）：
 
-![Monitor结构](https://note.youdao.com/yws/api/personal/file/E356B2FEB76742428B23D8050862AC3B?method=download&shareKey=2e07fe0b899b6dd17b2c87bccd5c85ed)
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030095037.png?token=AE4F4YPGENKC5RMY3VZ2NCS7TNZA4" alt="JavaMonitor对象结构" style="zoom: 67%;" />
 
 说明：
 - Monitor对象中有一个Owner，用来指示持有重量级锁的线程。Owner线程发现条件不满足，不想继续执行，调用锁对象的`wait()/wait(long)`方法，释放锁，进入Monitor对象的WaitSet，变为WAITING/TIMED_WAITING状态；
@@ -3401,7 +3401,7 @@ Java内存模型定义了一套多线程读写共享数据时，对数据的可�
 
 准备是连接阶段的第二步。虚拟机为类变量分配内存并设置初始值，这些变量所使用的内存都将在方法区中进行分配。需要注意的是：
 - 为类变量分配内存，不包括实例变量；
-- 为类变量设置初始值（也称为零值），而不是我们指定的值。比如`public static int value=111`，该变量在准备阶段被设置为`0`，而不是111；
+- 为类变量设置初始值（也称为零值），而不是我们指定的值。比如`public static int value=111`，该变量在准备阶段被设置为`0`，而不是`111`；
 - 不同类型的初始值不同，比如`int`类型的初始值为`0`，`long`类型的初始值为`0L`，`double`类型的初始值为`0.0d`；
 - 特殊情况：`public static final int value=111`，该变量用`final`修饰，在准备阶段就可以确定为`111`，不需要先设置为0；
 
@@ -3438,7 +3438,7 @@ Java内存模型定义了一套多线程读写共享数据时，对数据的可�
 2. 该类没有在其他任何地方被引用。
 3. 该类的类加载器的实例已被GC。
 
-JDK自带的`BootstrapClassLoader`，`PlatformClassLoader`，`AppClassLoader`负责加载JDK中的类，这三种类加载器的实例肯定不会被回收，所以这三种类加载器加载的类是不会被卸载的。但是，自定义的类加载器可以被回收，所以使用自定义的类加载器加载的类是可能被卸载的。
+JDK自带的BootstrapClassLoader，PlatformClassLoader，AppClassLoader负责加载JDK中的类，这三种类加载器的实例肯定不会被回收，所以这三种类加载器加载的类是不会被卸载的。但是，自定义的类加载器可以被回收，所以使用自定义的类加载器加载的类是可能被卸载的。
 
 
 ### 类加载器
@@ -3453,7 +3453,7 @@ JVM自带三个重要的类加载器：
 #### 类的唯一性
 对于任意一个类，都需要由加载它的类加载器和这个类本身一同确立其在Java虚拟机中的唯一性。
 
-即使两个类来源于同一个class文件，被同一个虚拟机加载，只要加载它们的类加载器不同，那这两个类也不相等。
+即使两个类来源于同一个`class`文件，被同一个虚拟机加载，只要加载它们的类加载器不同，那这两个类也不相等。
 
 
 #### 双亲委派模式
@@ -3487,9 +3487,9 @@ Application类加载器对象可以由`ClassLoader.getSystemClassLoader()`方法
 
 
 ## 对象创建过程
-Java创建对象的过程如下图所示（图片来自及JavaGuide）：
+Java创建对象的过程如下图所示（图片来自JavaGuide）：
 
-![Java创建对象](https://note.youdao.com/yws/api/personal/file/689254FE2ED8461B8DFCE6D074784634?method=download&shareKey=2e07fe0b899b6dd17b2c87bccd5c85ed)
+![Java创建对象的过程](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030091218.png?token=AE4F4YIKISRNAJSWNNNSGNS7TNUQW)
 
 
 ### 类加载检查
@@ -3508,7 +3508,7 @@ Java创建对象的过程如下图所示（图片来自及JavaGuide）：
 初始化零值完成之后，虚拟机要对对象进行必要的设置，例如这个对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、分代年龄等信息。 这些信息存放在对象头中。另外，根据虚拟机当前运行状态的不同，如是否启用偏向锁等，对象头会有不同的设置方式。
 
 
-### 执行<init>方法
+### 执行`<init>`方法
 在上面工作都完成之后，从虚拟机的视角来看，一个新的对象已经产生了，但从 Java 程序的视角来看，对象创建才刚开始：`<init>`方法还没有执行，所有的字段都还为零。所以一般来说，执行new指令之后会接着执行`<init>`方法，把对象按照程序员的意愿进行初始化，即调用构造方法，完成成员变量的初始化。
 
 
@@ -3600,16 +3600,17 @@ Java通常采用分代垃圾回收算法。这种算法没有什么新的思想�
 
 串行回收垃圾的过程如下图所示（来自 解密JVM 课件）：
 
-![串行](https://note.youdao.com/yws/api/personal/file/C8B26B78356442C7A40728906B050F15?method=download&shareKey=2e07fe0b899b6dd17b2c87bccd5c85ed)
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030092605.png?token=AE4F4YPX6GMLRWQENTMSGC27TNWEK" alt="Java垃圾回收串行策略"  />
 
 **吞吐量优先**，使用多线程进行垃圾回收，尽可能让单位时间内，STW的时间最短，即垃圾回收时间占比最低。
+
 - 吞吐量=运行用户代码时间/(运行用户代码时间+垃圾收集时间)；
 - 吞吐量大，适用于堆内存较大，多核CPU的服务器；
 - 比如Parallel Scavenge收集器、Parallel Old收集器；
 
 吞吐量优先回收垃圾的过程如下图所示（来自 解密JVM 课件）：
 
-![吞吐量优先](https://note.youdao.com/yws/api/personal/file/315B44EBCEA243DA8AE3014F35DBA7E4?method=download&shareKey=2e07fe0b899b6dd17b2c87bccd5c85ed)
+![Java垃圾回收吞吐量优先策略](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030092730.png?token=AE4F4YNCAZ64Z5SKPSV3PN27TNWJW)
 
 **响应时间优先**，使用多线程进行垃圾回收，尽可能让单次STW的时间最短。
 - 垃圾回收暂停时间短，适用于堆内存较大，多核CPU的服务器；
@@ -3685,7 +3686,7 @@ CMS收集器的过程分为4步：
 
 CMS收集器的过程如下图所示（来自 解密JVM 课件）：
 
-![CMS收集器](https://note.youdao.com/yws/api/personal/file/064499DB8C39450BBE8FE3521A80E3DD?method=download&shareKey=2e07fe0b899b6dd17b2c87bccd5c85ed)
+![Java垃圾回收CMS](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030092808.png?token=AE4F4YKOJCO6KKX2WILOU5K7TNWMC)
 
 优点：并发收集、应用程序停顿时间短。
 
@@ -3729,7 +3730,7 @@ G1也属于分代垃圾收集器，但是相比于之前的收集器，G1没有�
 
 G1收集器对堆的划分如下图所示（来自 [JVM性能优化（三）G1垃圾收集器](https://blog.csdn.net/qq_14996421/article/details/105806571)）：
 
-![G1对堆的划分](https://note.youdao.com/yws/api/personal/file/DD3E412734EE4EFE996F4493900AE30B?method=download&shareKey=2e07fe0b899b6dd17b2c87bccd5c85ed)
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030094537.png?token=AE4F4YISMBWIPSVFV6AKW7C7TNYNU" alt="Java垃圾回收G1区域" style="zoom:80%;" />
 
 在G1提出之前，垃圾收集器主要有三种类型：串行收集器、并行收集器和CMS收集器。这三种收集器分别可以是满足Java应用三种不同的需求：内存占用及并发开销最小化、应用吞吐量最大化和应用GC暂停时间最小化。但是，这三种垃圾收集器有几个问题：（1）所有针对老年代的操作必须扫描整个老年代空间；（2）新生代和老年代是独立的内存空间，必须先确定年轻代和老年代的内存地址；（3）要么工作在老年代，要么工作在年轻代，不能同时兼顾二者。
 
@@ -3738,15 +3739,11 @@ G1的工作过程主要分为三步：
 2. 标记周期（Mark Cycle）；
 3. 混合垃圾回收（Mixed GC）；
 
-G1的工作过程如下图所示：
-
-![G1的工作过程](https://note.youdao.com/yws/api/personal/file/236663F352774D72B342EF1872170317?method=download&shareKey=2e07fe0b899b6dd17b2c87bccd5c85ed)
-
 第一步，新生代垃圾回收，用于回收Eden区和存活区，使用复制算法。一旦Eden区空间不足，新生代GC就会启动，需要STW，暂停用户线程。新生代GC把Eden区的数据移动到存活区中，把存活区的数据移动到新的存活区或老年代。如果存活区空间不足，Eden区的部分数据会直接晋升到老年代。新生代GC结束后，Eden区被清空，存活区至少有一个，应用线程继续执行。
 
 新生代GC的过程如下图所示：
 
-![Young GC的过程](https://note.youdao.com/yws/api/personal/file/26BC304C5B994AD69F288EF80E63C78F?method=download&shareKey=2e07fe0b899b6dd17b2c87bccd5c85ed)
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030093637.png?token=AE4F4YPZE6IAFOP4BBBCKEK7TNXL4" alt="Java垃圾回收G1新生代垃圾回收" style="zoom:80%;" />
 
 第二步，标记周期，用于标记需要垃圾回收的区域，主要作用于老年代。与CMS有些类似，标记周期是为了降低一次停顿时间，把可以和应用程序并发执行的部分单独提取出来。
 
@@ -3851,12 +3848,6 @@ jmap -dump:live,format=b,file=heap.hprof pid
 # 4. 分析嫌疑对象和其他对象的引用关系
 # 5. 分析程序的源代码，找出嫌疑对象数量过多的原因。
 ```
-
-
-
-
-
-
 
 
 
