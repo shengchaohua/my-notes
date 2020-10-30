@@ -2,10 +2,7 @@
 
 # 内存管理
 
-> 作者：IT诸葛亮
-链接：https://www.jianshu.com/p/0914a5e9ae37
-来源：简书
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+> [IT诸葛亮](https://www.jianshu.com/p/0914a5e9ae37)
 
 一、对象的引用计数机制
 
@@ -33,8 +30,9 @@ Python提供了对内存的垃圾收集机制，但是它将释放的内存放�
 1. pymalloc机制。Python中所有小于256个字节的对象都使用pymalloc分配内存，而大的对象则使用系统的malloc。
 3. 不同类型的内存池相互独立，不会共享相同的空间。如果分配又释放了大量的整数，用于缓存这些整数的内存空间就不能再分配给浮点数。
 
-# Python面向对象 
-### __new__方法和__init__方法
+# 面向对象 
+## __new__方法和__init__方法
+
 1. new是类方法，init是实例方法。新建一个对象会自动调用new方法和init方法。new方法的调用是发生在init之前的。
 2. new方法用来创建一个实例对象，并作为返回值返回，然后这个实例对象会调用init方法进行初始化。
 
@@ -142,9 +140,9 @@ test()
 > [Python变量查找LEGB原则](https://blog.csdn.net/baidu_35085676/article/details/79851251)
 
 LEGB规则：
-- L-Local(function)；函数内的名字空间
-- E-Enclosing function locals；外部嵌套函数的名字空间(例如closure)
-- G-Global(module)；函数定义所在模块（文件）的名字空间
-- B-Builtin(Python)；Python内置模块的名字空间
+- L-Local(function)：函数内的名字空间
+- E-Enclosing function locals：外部嵌套函数的名字空间(例如closure)
+- G-Global(module)：函数定义所在模块（文件）的名字空间
+- B-Builtin(Python)：Python内置模块的名字空间
 
-当Python访问变量值时，默认LEGB查找原则，如果都找不到，则会抛出NameError
+当Python访问变量值时，默认LEGB查找原则，如果都找不到，则会抛出NameError。
