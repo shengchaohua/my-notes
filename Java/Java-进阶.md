@@ -47,7 +47,7 @@
 
 简单的说，一致性哈希是将整个哈希值空间组织成一个虚拟的圆环，如假设哈希函数H的值空间为0-2^32-1（哈希值是32位无符号整形），整个哈希空间环如下
 
-![一致性哈希](https://segmentfault.com/img/remote/1460000017847101)
+![一致性哈希](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201101154017.png?token=AE4F4YMGN3FRWPEEHAWPHOC7TZTP4)
 
 整个空间按顺时针方向组织，0和2^32-1在零点中方向重合。
 
