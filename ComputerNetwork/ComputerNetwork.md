@@ -104,7 +104,7 @@ HTTP协议的主要特点：
 
 HTTP报文格式如下图（图片来自网上）：
 
-<img src="C:\Users\shengchaohua\Desktop\图片\计算机网络 HTTP报文.png" alt="计算机网络 HTTP报文" style="zoom: 67%;" />
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201102135840.png?token=AE4F4YJMYJZ6SWUZUXU6IT27T6QK2" alt="计算机网络 HTTP报文" style="zoom: 67%;" />
 
 ### 请求报文
 请求报文示例：
