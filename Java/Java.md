@@ -1225,7 +1225,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 
 线程池的状态转换如下图所示：
 
-<img src="C:\Users\shengchaohua\Desktop\图片\Java线程池状态转换.jpg" alt="Java线程池状态转换" style="zoom: 80%;" />
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201105141113.jpg" alt="Java线程池状态转换" style="zoom: 80%;" />
 
 
 ThreadPoolExecutor的常用方法包括：
