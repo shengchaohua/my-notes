@@ -3049,7 +3049,7 @@ class Solution:
         return res
 ```
 
-3、非递归版本，Morris中序遍历，空间复杂度`O(1)`
+3、非递归版本，Morris中序遍历，空间复杂度$O(1)$
 
 ==TODO==
 
@@ -4785,10 +4785,10 @@ graph = [
 ]
 # 邻接链表
 graph = {1: [2, 5], 
-         2: [1, 5, 3, 4], 
+         2: [1, 3, 4, 5], 
          3: [2, 4], 
-         4: [2, 5, 3], 
-         5: [4, 1, 2],
+         4: [2, 3, 5], 
+         5: [1, 2, 4],
 }
 ```
 
@@ -4806,7 +4806,7 @@ graph = [
 # 邻接链表
 graph = {1: [2, 4], 
          2: [5], 
-         3: [6, 5], 
+         3: [5, 6], 
          4: [2], 
          5: [4], 
          6: [6],
@@ -4823,56 +4823,115 @@ graph = {1: [2, 4],
 3. 在图结构中，如果有回路存在，那么一个顶点被访问之后，有可能沿回路又回到该顶点。
 4. 在图结构中，一个顶点可以和其它多个顶点相连，当这样的顶点访问过后，存在如何选取下一个要访问的顶点的问题。
 
-图的遍历可分为四类：
-- 遍历完所有的边而不能有重复，即所谓“一笔画问题”或“欧拉路径”；
-- 遍历完所有的顶点而没有重复，即所谓“哈密尔顿问题”。
-- 遍历完所有的边而可以有重复，即所谓“中国邮递员问题”；
-- 遍历完所有的顶点而可以重复，即所谓“旅行推销员问题”。
-
-第一和第三类问题已经得到了完满的解决，而第二和第四类问题则只得到了部分解决。
-第一类问题就是研究所谓的欧拉图的性质，而第二类问题则是研究所谓的哈密尔顿图的性质。
-
 图的遍历方法目前有两种算法：广度（宽度）优先搜索和深度优先搜索。
 
 
 ### 广度优先搜索
-==TODO==
+给定图$G=(V,E)$和一个可以识别的源结点$s$，广度优先搜索对图中的边进行系统性的探索来发现可以从源结点到达的所有结点。该算法能够计算从源结点$s$到每个可到达的结点的距离（最少的边数），同时生成一棵“广度优先搜索树”。该树以源结点$s$为根结点，包含所有可从$s$到达的结点。对于每个可以从源结点$s$到达的结点$v$，在广度优先搜索树里从结点$s$到结点$v$的简单路径所对应的就是图$G$中从结点$s$到结点$v$的“最短路径”，即包含最少边数的路径。该算法既可以用于有向图，也可以用于无向图。
 
-对于邻接链表表示的图，广度优先搜索如下所示：
+广度优先搜索之所以如此得名是因为该算法始终是将已发现结点和未发现结点之间的边界，沿其广度方向向外扩展。也就是说，广度优先搜索需要在发现距离源结点$s$为$k$的所有结点之后，才会发现距离源结点$s$为$k+1$的其他结点。
+
+对于一个用邻接链表表示的图，广度优先搜索的代码如下所示：
 ```python
-def bfs(graph, start):
-    from collections import deque
-
-    visited = {}
-    distances = {}
-    predecessors = {}
-    for vertex in graph:
-        if vertex != start:
-            visited[vertex] = False
-            distances[vertex] = float("inf")
-            predecessors[vertex] = None
-    visited[start] = True
-    distances[start] = 0
-    predecessors[start] = None
-
+def BFS(graph, start):
     res = []
-    queue = deque()
-    queue.append(start)
+    visited = {}
+    for node in graph.keys():
+        visited[node] = False
+    visited[start] = True
+    distances = {start: 0}
+    predecessors = {start: None}
+
+    queue = [start]
     while queue:
-        node = queue.popleft()
+        node = queue.pop(0)  # 最好使用双向队列collections.deque
         res.append(node)
-        for adj in graph[node]:
-            if not visited[adj]:
-                visited[adj] = True
-                distances[adj] = distances[node] + 1
-                predecessors[adj] = node
-                queue.append(adj)
+        for adj_node in graph[node]:
+            if not visited[adj_node]:
+                visited[adj_node] = True
+                distances[adj_node] = distances[node] + 1
+                predecessors[adj_node] = node
+                queue.append(adj_node)
     return res, distances, predecessors
+
+
+if __name__ == "__main__":
+    graph = {1: [2, 5],
+             2: [1, 3, 4, 5],
+             3: [2, 4],
+             4: [2, 3, 5],
+             5: [1, 2, 4],
+             }
+    res, distances, predecessors = BFS(graph, 1)
+    # [1, 2, 5, 3, 4] {1: 0, 2: 1, 5: 1, 3: 2, 4: 2} {1: None, 2: 1, 5: 1, 3: 2, 4: 2}
+    print(res, distances, predecessors)
 ```
+
+广度优先搜索的时间复杂度为$O(V+E)$。
 
 ### 深度优先搜索
 
+深度优先搜索所使用的策略就像其名字所隐含的：只要可能，就在图中尽量“深入”。深度优先搜索总是对最近才发现的结点$v$的出发边进行探索，直到该结点的所有出发边都被发现为止。一旦结点$v$的所有出发边都被发现，搜索则“回溯”到$v$的前驱结点（$v$是经过该结点才被发现的），来搜索该前驱结点的出发边。该过程一直持续到从源结点可以到达的所有结点都被发现为止。如果还存在尚未发现的结点，则深度优先搜索将从这些未被发现的结点中任选一个作为新的源结点，并重复同样的搜索过程。
 
+对于一个用邻接链表表示的图，深度优先搜索的代码如下所示：
+
+```python
+def DFS_stack(graph, start):
+    """深度优先搜索，循环方法，使用栈"""
+    res = [start]
+    visited = {node: False for node in graph.keys()}
+    visited[start] = True
+    stack = [start]
+    while stack:
+        node = stack.pop()
+        if not visited[node]:
+            res.append(node)
+        visited[node] = True
+        for adj_node in reversed(graph[node]):
+            if not visited[adj_node]:
+                stack.append(adj_node)
+    return res
+
+
+def DFS(graph, start):
+    """深度优先搜索，递归方法，只适用于连通图，需要指定源结点"""
+    res = []
+    visited = {node: False for node in graph.keys()}
+    DFS_recursive(graph, start, visited, res)
+    return res
+
+
+def DFS2(graph):
+    """深度优先搜索，递归方法，适用于连通图和非连通图，但是没有指定源结点"""
+    res = []
+    visited = {node: False for node in graph.keys()}
+    for node in graph.keys():
+        DFS_recursive(graph, node, visited, res)
+    return res
+
+
+def DFS_recursive(graph, start, visited, res):
+    visited[start] = True
+    res.append(start)
+    for node in graph[start]:
+        if not visited[node]:
+            DFS_recursive(graph, node, visited, res)
+
+
+if __name__ == "__main__":
+    graph = {1: [2, 5],
+             2: [1, 3, 4, 5],
+             3: [2, 4],
+             4: [2, 3, 5],
+             5: [1, 2, 4],
+             }
+    res = DFS(graph, 1)
+    print(res)  # [1, 2, 3, 4, 5]
+    res = DFS_stack(graph, 1)
+    print(res)  # [1, 2, 3, 4, 5]
+```
+
+深度优先搜索的时间复杂度为$O(V+E)$。
 
 ## 拓扑排序
 ==TODO==
