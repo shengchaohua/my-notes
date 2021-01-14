@@ -4784,11 +4784,12 @@ graph = [
     [1, 1, 0, 1, 0],
 ]
 # 邻接链表
-graph = {1: [2, 5], 
-         2: [1, 3, 4, 5], 
-         3: [2, 4], 
-         4: [2, 3, 5], 
-         5: [1, 2, 4],
+graph = {
+    1: [2, 5], 
+    2: [1, 3, 4, 5], 
+    3: [2, 4], 
+    4: [2, 3, 5], 
+    5: [1, 2, 4],
 }
 ```
 
@@ -4804,12 +4805,13 @@ graph = [
     [0, 0, 0, 0, 0, 1],
 ]
 # 邻接链表
-graph = {1: [2, 4], 
-         2: [5], 
-         3: [5, 6], 
-         4: [2], 
-         5: [4], 
-         6: [6],
+graph = {
+    1: [2, 4], 
+    2: [5], 
+    3: [5, 6], 
+    4: [2], 
+    5: [4], 
+    6: [6],
 }
 ```
 
@@ -4823,7 +4825,7 @@ graph = {1: [2, 4],
 3. 在图结构中，如果有回路存在，那么一个顶点被访问之后，有可能沿回路又回到该顶点。
 4. 在图结构中，一个顶点可以和其它多个顶点相连，当这样的顶点访问过后，存在如何选取下一个要访问的顶点的问题。
 
-图的遍历方法目前有两种算法：广度（宽度）优先搜索和深度优先搜索。
+图的遍历方法目前有两种算法：广度（宽度）优先搜索和深度优先搜索。在广度优先搜索算法中，我们把源结点的数量限制为一个，而深度优先搜索则可以有多个源结点，因为广度优先搜索通常用来寻找从特定源结点出发的最短路径距离（及其相关的前驱子图），而深度优先搜索则常常作为另一个算法里的一个子程序。
 
 
 ### 广度优先搜索
@@ -4835,15 +4837,12 @@ graph = {1: [2, 4],
 ```python
 def BFS(graph, start):
     res = []
-    visited = {}
-    for node in graph.keys():
-        visited[node] = False
+    visited = {node: False for node in graph.keys()}
     visited[start] = True
     distances = {start: 0}
     predecessors = {start: None}
-
     queue = [start]
-    while queue:
+    while len(queue) > 0:
         node = queue.pop(0)  # 最好使用双向队列collections.deque
         res.append(node)
         for adj_node in graph[node]:
@@ -4856,15 +4855,17 @@ def BFS(graph, start):
 
 
 if __name__ == "__main__":
-    graph = {1: [2, 5],
-             2: [1, 3, 4, 5],
-             3: [2, 4],
-             4: [2, 3, 5],
-             5: [1, 2, 4],
-             }
+    graph = {
+        1: [2, 5],
+        2: [1, 3, 4, 5],
+        3: [2, 4],
+        4: [2, 3, 5],
+        5: [1, 2, 4],
+    }
     res, distances, predecessors = BFS(graph, 1)
-    # [1, 2, 5, 3, 4] {1: 0, 2: 1, 5: 1, 3: 2, 4: 2} {1: None, 2: 1, 5: 1, 3: 2, 4: 2}
-    print(res, distances, predecessors)
+    print(res)  # [1, 2, 5, 3, 4]
+    print(distances)  # {1: 0, 2: 1, 5: 1, 3: 2, 4: 2}
+    print(predecessors)  # {1: None, 2: 1, 5: 1, 3: 2, 4: 2}
 ```
 
 广度优先搜索的时间复杂度为$O(V+E)$。
@@ -4873,75 +4874,146 @@ if __name__ == "__main__":
 
 深度优先搜索所使用的策略就像其名字所隐含的：只要可能，就在图中尽量“深入”。深度优先搜索总是对最近才发现的结点$v$的出发边进行探索，直到该结点的所有出发边都被发现为止。一旦结点$v$的所有出发边都被发现，搜索则“回溯”到$v$的前驱结点（$v$是经过该结点才被发现的），来搜索该前驱结点的出发边。该过程一直持续到从源结点可以到达的所有结点都被发现为止。如果还存在尚未发现的结点，则深度优先搜索将从这些未被发现的结点中任选一个作为新的源结点，并重复同样的搜索过程。
 
-对于一个用邻接链表表示的图，深度优先搜索的代码如下所示：
+对于一个用邻接链表表示的图（无向图和有向图均可），深度优先搜索的代码如下所示：
 
 ```python
-def DFS_stack(graph, start):
-    """深度优先搜索，循环方法，使用栈"""
-    res = [start]
+def DFS(graph, start, use_loop=True):
+    """只适用于连通图，需要指定源结点"""
+    res = []
     visited = {node: False for node in graph.keys()}
+    if use_loop:
+        DFS_loop(graph, start, visited, res)
+    else:
+        DFS_recursive(graph, start, visited, res)
+    return res
+
+
+def DFS2(graph, use_loop=True):
+    """适用于连通图和非连通图，不需要指定源结点"""
+    res = []
+    visited = {node: False for node in graph.keys()}
+    if use_loop:
+        for node in graph.keys():  # 最终的遍历结果依赖于结点的访问顺序
+            if not visited[node]:
+                DFS_loop(graph, node, visited, res)
+    else:
+        for node in graph.keys():  # 最终的遍历结果依赖于结点的访问顺序
+            if not visited[node]:
+                DFS_recursive(graph, node, visited, res)
+    return res
+
+
+def DFS_loop(graph, start, visited, res):
+    """深度优先搜索，循环方法，使用栈。
+    对于只适用于连通图的DFS，可以不使用visited和res两个参数，
+    而是在此函数内部定义二者，并在最后返回遍历结果res。
+    """
     visited[start] = True
     stack = [start]
-    while stack:
+    while len(stack) > 0:
         node = stack.pop()
-        if not visited[node]:
-            res.append(node)
-        visited[node] = True
-        for adj_node in reversed(graph[node]):
+        res.append(node)
+        for adj_node in reversed(graph[node]):  # 最终的遍历结果依赖于结点的访问顺序
             if not visited[adj_node]:
+                visited[adj_node] = True
                 stack.append(adj_node)
-    return res
-
-
-def DFS(graph, start):
-    """深度优先搜索，递归方法，只适用于连通图，需要指定源结点"""
-    res = []
-    visited = {node: False for node in graph.keys()}
-    DFS_recursive(graph, start, visited, res)
-    return res
-
-
-def DFS2(graph):
-    """深度优先搜索，递归方法，适用于连通图和非连通图，但是没有指定源结点"""
-    res = []
-    visited = {node: False for node in graph.keys()}
-    for node in graph.keys():
-        DFS_recursive(graph, node, visited, res)
-    return res
 
 
 def DFS_recursive(graph, start, visited, res):
+    """深度优先搜索，递归方法"""
     visited[start] = True
     res.append(start)
-    for node in graph[start]:
+    for node in graph[start]:  # 最终的遍历结果依赖于结点的访问顺序
         if not visited[node]:
             DFS_recursive(graph, node, visited, res)
 
 
 if __name__ == "__main__":
-    graph = {1: [2, 5],
-             2: [1, 3, 4, 5],
-             3: [2, 4],
-             4: [2, 3, 5],
-             5: [1, 2, 4],
-             }
-    res = DFS(graph, 1)
+    graph = {
+        1: [2, 5],
+        2: [1, 3, 4, 5],
+        3: [2, 4],
+        4: [2, 3, 5],
+        5: [1, 2, 4],
+    }
+    res = DFS(graph, 1, True)
     print(res)  # [1, 2, 3, 4, 5]
-    res = DFS_stack(graph, 1)
+    res = DFS(graph, 1, False)
+    print(res)  # [1, 2, 3, 4, 5]
+    res = DFS2(graph, True)
+    print(res)  # [1, 2, 3, 4, 5]
+    res = DFS2(graph, False)
     print(res)  # [1, 2, 3, 4, 5]
 ```
 
 深度优先搜索的时间复杂度为$O(V+E)$。
 
 ## 拓扑排序
-==TODO==
+对于一个有向无环图$G=(V,E)$来说，其拓扑排序是$G$中所有结点的一种线性排序，该次序满足以下条件：如果图$G$包含边$(u,v)$，则结点$u$在拓扑排序中处于结点$v$的前面（如果图包含环路，则不可能排出一个线性次序）。许多实际应用都需要使用有向无环图来指明事件的优先次序。
+
+对于一个用邻接链表表示的有向无环图，可以使用深度优先搜索对其进行拓扑排序，如下所示：
+
+```python
+def DFS_recursive(graph, start, visited, res):
+    """深度优先搜索，递归方法"""
+    visited[start] = True
+    for node in graph[start]:
+        if not visited[node]:
+            DFS_recursive(graph, node, visited, res)
+    res.insert(0, start)
+
+
+def topological_sort(graph):
+    res = []
+    visited = {node: False for node in graph.keys()}
+    for node in range(len(graph)):
+        if not visited[node]:
+            DFS_recursive(graph, node, visited, res)
+    return res
+
+
+if __name__ == "__main__":
+    clothes = {
+        0: "underwear",
+        1: "pants",
+        2: "belt",
+        3: "suit",
+        4: "shoe",
+        5: "socks",
+        6: "shirt",
+        7: "tie",
+        8: "watch",
+    }
+    graph = {
+        0: [1, 4],
+        1: [2, 4],
+        2: [3],
+        3: [],
+        4: [],
+        5: [4],
+        6: [2, 7],
+        7: [3],
+        8: [],
+    }
+    res = topological_sort(graph)
+    for ele in res:
+        print(str(ele) + "-" + clothes[ele], end=" ")
+    # 8-watch 6-shirt 7-tie 5-socks 0-underwear 1-pants 4-shoe 2-belt 3-suit
+```
+
+经过拓扑排序后的结点次序，与结点的完成时间恰好相反，所以在`DFS_recursive`的最后一行保存结果。拓扑排序的时间复杂度为$O(V+E)$，因为深度优先搜索的运行时间为$O(V+E)$。
+
+在有向无环图上执行拓扑排序还有一种方法，就是重复寻找入度为0的结点，输入该结点，将该结点及从其发出的边从图中删除。
 
 
 ## 最小生成树
+### Kruskal
+
+
+
 ### Prim
 
 
-### Kruskal
 
 ## 最短路径
 ### DijiStra
