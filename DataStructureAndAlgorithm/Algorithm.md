@@ -5007,19 +5007,91 @@ if __name__ == "__main__":
 
 
 ## 最小生成树
-对于一个带权重的连通无向图$G=(V,E)$，最小生成树问题是指，找到一个无环子集$T\subseteq E$，能够将所有的结点连接起来，又具有最小的权重。
+对于一个带权重的连通无向图$G=(V,E)$，最小生成树（Minimum Spanning Tree）问题是指，找到一个无环子集$T\subseteq E$，能够将所有的结点连接起来，又具有最小的权重。
 
-解决最小生成树问题有两种算法：Kruskal算法和Prim算法。如果使用普通的二叉堆，那么可以很容易地将这两个算法的时间复杂度限制在$O(E\lg{V})$的数量级内。但如果使用斐波那契堆，Prim算法的运行时间将改善为$O(E+V\lg{V})$。
+解决最小生成树问题有两种算法：Kruskal算法和Prim算法。这两种算法都是贪心算法。贪心算法通常在每一步有多个可能的选择，并推荐选择在当前看来最好的选择。这种策略一般并不能保证找到一个全局最优的解决方案。但是，对于最小生成树问题来说，可以证明，某些贪心策略确实能够找到一棵权重最小的生成树。
 
-这两种算法都是贪心算法。贪心算法通常在每一步有多个可能的选择，并推荐选择在当前看来最好的选择。这种策略一般并不能保证找到一个全局最优的解决方案。但是，对于最小生成树问题来说，某些贪心策略确实能够找到一棵权重最小的生成树。
+如果使用普通的二叉堆，那么可以很容易地将这两个算法的时间复杂度限制在$O(E\lg{V})$的数量级内。但如果使用斐波那契堆，Prim算法的运行时间将改善为$O(E+V\lg{V})$。
 
 ### Kruskal
 
+对于一个带权重的连通无向图$G=(V,E)$，Kruskal算法把图中的每一个结点看作一棵树，所以图中的所有结点可以组成一个森林。该算法按照边的权重大小依次进行考虑，如果一条边可以将两棵不同的树连接起来，它就被加入到森林中，从而完成对两棵树的合并。
 
+在Kruskal算法的实现中，使用了一种叫做并查集的数据结构，其作用是用来维护几个不相交的元素集合。在该算法中，每个集合代表当前森林中的一棵树。
+
+对于一个用邻接链表表示的带权重的连通无向图，Kruskal算法的实现如下所示：
+
+```python
+def mst_kruskal(graph, weights):
+    edges = []
+    for from_node in graph:
+        for to_node in graph[from_node]:
+            if from_node < to_node:
+                e = (from_node, to_node)
+                edges.append((e, weights[e]))
+    edges.sort(key=lambda x: x[1])
+    parents = {node: node for node in graph}
+
+    def find_parent(node):
+        if node != parents[node]:
+            parents[node] = find_parent(parents[node])
+        return parents[node]
+
+    minimum_cost = 0
+    minimum_spanning_tree = []
+
+    for edge in edges:
+        parent_from_node = find_parent(edge[0][0])
+        parent_to_node = find_parent(edge[0][1])
+        if parent_from_node != parent_to_node:
+            minimum_cost += edge[1]
+            minimum_spanning_tree.append(edge)
+            parents[parent_from_node] = parent_to_node
+
+    return minimum_spanning_tree, minimum_cost
+
+
+if __name__ == "__main__":
+    graph = {
+        "a": ["b", "h"],
+        "b": ["a", "c", "h"],
+        "c": ["b", "d", "f", "i"],
+        "d": ["c", "e", "f"],
+        "e": ["d", "f"],
+        "f": ["c", "d", "e", "g"],
+        "g": ["f", "h", "i"],
+        "h": ["a", "b", "g", "i"],
+        "i": ["c", "g", "h"],
+    }
+    weights = {
+        ("a", "b"): 4, ("a", "h"): 8,
+        ("b", "a"): 4, ("b", "c"): 8, ("b", "h"): 11,
+        ("c", "b"): 8, ("c", "d"): 7, ("c", "f"): 4, ("c", "i"): 2,
+        ("d", "c"): 7, ("d", "e"): 9, ("d", "f"): 14,
+        ("e", "d"): 9, ("e", "f"): 10,
+        ("f", "c"): 4, ("f", "d"): 14, ("f", "e"): 10, ("f", "g"): 2,
+        ("g", "f"): 2, ("g", "h"): 1, ("g", "i"): 6,
+        ("h", "a"): 8, ("h", "b"): 11, ("h", "g"): 1, ("h", "i"): 7,
+        ("i", "c"): 2, ("i", "g"): 6, ("i", "h"): 7,
+    }
+    minimum_spanning_tree, minimum_cost = mst_kruskal(graph, weights)
+    print(minimum_spanning_tree)
+    print(minimum_cost)
+    # [(('g', 'h'), 1), (('c', 'i'), 2), (('f', 'g'), 2), (('a', 'b'), 4), (('c', 'f'), 4), (('c', 'd'), 7), (('a', 'h'), 8), (('d', 'e'), 9)]
+    # 37
+```
 
 ### Prim
 
+对于一个带权重的连通无向图$G=(V,E)$，Prim算法从图中任意一个结点$r$开始建立最小生成树，这棵树一直长大到覆盖$V$中的所有结点为止。与Kruskal算法不同，该算法始终保持只有一棵树，每一步选择与当前的树相邻的一条边，加入到这棵树中。当算法终止时，所有已选择的边形成一棵最小生成树。本策略也属于贪心策略，因为每一步所加入的边都必须是使树的总权重增加量最小的边。
 
+在Prim算法的实现中，需要使用最小优先队列来快速选择一条新的边，以便加入到已选择的边构成的树中。所以，在算法的执行过程中，对于不在树中的每一个结点，需要记录其和树中结点的所有边中最小边的权重。
+
+对于一个用邻接链表表示的带权重的连通无向图，Prim算法的实现如下所示：
+
+
+
+Prim算法的运行时间取决于最小优先队列的实现方式。如果最小优先队列使用二叉最小优先队列（最小堆），该算法的时间复杂度为$O(E\lg{V})$。从渐进意义上来说，它与Kruskal算法的运行时间相同。
 
 ## 最短路径
 ### DijiStra
