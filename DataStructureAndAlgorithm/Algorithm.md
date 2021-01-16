@@ -5007,7 +5007,7 @@ if __name__ == "__main__":
 
 
 ## 最小生成树
-对于一个带权重的连通无向图$G=(V,E)$，最小生成树（Minimum Spanning Tree）问题是指，找到一个无环子集$T\subseteq E$，能够将所有的结点连接起来，又具有最小的权重。
+对于一个带权重的连通无向图$G=(V,E)$和权重函数$w:E \rightarrow R$，该权重函数将每条边映射到实数值的权重上。最小生成树（Minimum Spanning Tree）问题是指，找到一个无环子集$T\subseteq E$，能够将所有的结点连接起来，又具有最小的权重。
 
 解决最小生成树问题有两种算法：Kruskal算法和Prim算法。这两种算法都是贪心算法。贪心算法通常在每一步有多个可能的选择，并推荐选择在当前看来最好的选择。这种策略一般并不能保证找到一个全局最优的解决方案。但是，对于最小生成树问题来说，可以证明，某些贪心策略确实能够找到一棵权重最小的生成树。
 
@@ -5024,11 +5024,9 @@ if __name__ == "__main__":
 ```python
 def mst_kruskal(graph, weights):
     edges = []
-    for from_node in graph:
-        for to_node in graph[from_node]:
-            if from_node < to_node:
-                e = (from_node, to_node)
-                edges.append((e, weights[e]))
+    for edge, weight in weights.items():
+        if edge[0] < edge[1]:
+            edges.append((edge, weight))
     edges.sort(key=lambda x: x[1])
     parents = {node: node for node in graph}
 
@@ -5091,13 +5089,33 @@ if __name__ == "__main__":
 
 
 
-Prim算法的运行时间取决于最小优先队列的实现方式。如果最小优先队列使用二叉最小优先队列（最小堆），该算法的时间复杂度为$O(E\lg{V})$。从渐进意义上来说，它与Kruskal算法的运行时间相同。
+Prim算法的运行时间取决于最小优先队列的实现方式。如果最小优先队列使用二叉最小优先队列（最小堆），该算法的时间复杂度为$O(E\lg{V})$。从渐进意义上来说，它与Kruskal算法的运行时间相同。如果使用斐波那契堆来实现最小优先队列，则Prim算法的运行时间将改进到$O(E+V\lg{V})$。
 
-## 最短路径
-### DijiStra
+## 单源最短路径
 
+给定一个带权重的有向图$G=(V,E)$和权重函数$w:E \rightarrow R$，该权重函数将每条边映射到实数值的权重上。单源最短路径问题是指，给定源结点$s \in V$，找到该结点到每个结点$v \in V$的最短路径。
+
+最短路径的一个重要性质是：两个结点之间的一条最短路径包含着其他的最短路径。或者，最短路径的子路径也是最短路径。
+
+某些单源最短路径问题可能包含权重为负值的边。但只要图$G=(V,E)$中不包含从源结点$s$可以到达的权重为负值的环路，则对于所有的结点$v \in V$，最短路径权重$\delta(s,v)$都有精确定义，是可以计算的，即使其取值是负数。
+
+DijkiStra算法假设输入图的所有的边权重为非负值。如果图中有权重为负值的边，则无法应用DijkiStra算法。
+
+### Bellman_Ford
+
+
+
+### DijkiStra
+
+
+
+## 所有结点对最短路径
 
 ### Floyd
+
+
+
+
 
 
 
