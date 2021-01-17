@@ -5169,9 +5169,75 @@ if __name__ == "__main__":
 
 Bellman-Ford算法的运行时间为$O(VE)$。
 
-### DijkiStra
+### Dijkistra
 
-DijkiStra算法解决的是带权重的有向图上的单源最短路径问题，该算法要求所有边的权重都为非负值。
+Dijkistra算法解决的是带权重的有向图上的单源最短路径问题，该算法要求所有边的权重都为非负值。
+
+
+
+```python
+def intialize_single_source(graph, start):
+    distances = {}
+    predecessors = {}
+    for node in graph.keys():
+        distances[node] = float("inf")
+        predecessors[node] = None
+    distances[start] = 0
+    return distances, predecessors
+
+
+def relax(u, v, w, distances, predecessors):
+    if distances[v] > distances[u] + w[(u, v)]:
+        distances[v] = distances[u] + w[(u, v)]
+        predecessors[v] = u
+
+
+def dijkistra(graph, weights, start):
+    import heapq  # 使用heapq实现优先队列
+    distances, predecessors = intialize_single_source(graph, start)
+    visited = {node: False for node in graph.keys()}
+    priority_queue = []
+    for node, d in distances.items():
+        if not visited[node]:
+            priority_queue.append([d, node])
+    heapq.heapify(priority_queue)
+
+    while len(priority_queue) > 0:
+        d, node = heapq.heappop(priority_queue)
+        if visited[node]:
+            continue
+        visited[node] = True
+        for adj_node in graph[node]:
+            if visited[adj_node]:
+                continue
+            relax(node, adj_node, weights, distances, predecessors)
+            heapq.heappush(priority_queue, [distances[adj_node], adj_node])
+    return distances, predecessors
+
+
+if __name__ == "__main__":
+    graph = {
+        "s": ["t", "y"],
+        "t": ["x", "y"],
+        "x": ["z"],
+        "y": ["t", "x", "z"],
+        "z": ["s", "x"],
+    }
+    weights = {
+        ("s", "t"): 10, ("s", "y"): 5,
+        ("t", "x"): 1, ("t", "y"): 2,
+        ("x", "z"): 4,
+        ("y", "t"): 3, ("y", "x"): 9, ("y", "z"): 2,
+        ("z", "s"): 7, ("z", "x"): 6,
+    }
+    distances, predecessors = dijkistra(graph, weights, "s")
+    print(distances)
+    print(predecessors)
+    # {'s': 0, 't': 8, 'x': 9, 'y': 5, 'z': 7}
+    # {'s': None, 't': 'y', 'x': 't', 'y': 's', 'z': 'y'}
+```
+
+
 
 ## 所有结点对最短路径
 
