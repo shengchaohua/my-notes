@@ -5103,7 +5103,7 @@ Prim算法的运行时间取决于最小优先队列的实现方式。如果最�
 
 ### Bellman-Ford
 
-Bellman-Ford算法解决的是一般情况下的单源最短路径问题，允许图中边的权重为负值。Bellman-Ford算法比较简单，并且还能够侦测是否存在从源结点可以到达的权重为负值的环路。
+Bellman-Ford算法解决的是一般情况下的单源最短路径问题，允许图中边的权重为负值。该算法比较简单，并且还能够侦测是否存在从源结点可以到达的权重为负值的环路。
 
 Bellman-Ford算法通过对边进行松弛操作来渐进地降低从源结点到每个结点的最短路径的估计距离，直到得到最终的最短路径。当且仅当输入图不包含可以从源结点到达的权重为负值的环路，该算法返回`TRUE`值，反之返回`FALSE`值。
 
@@ -5173,9 +5173,79 @@ Bellman-Ford算法的运行时间为$O(VE)$。
 
 Dijkistra算法解决的是带权重的有向图上的单源最短路径问题，该算法要求所有边的权重都为非负值。
 
+给定一个带权重的有向图$G=(V,E)$，该算法在运行过程中维持的关键信息是一组已访问的结点集合$S$，从源结点到该集合中每个结点之间的最短路径已经被被找到。算法重复从结点集$V-S$中选择最短路径最小的结点$u$，将结点$u$加入到集合$S$，然后对所有从$u$发出的边进行松弛。
 
+因为Dijkistra算法总是选择集合$V-S$中“最近”的结点来加入到集合$S$中，该算法使用的是贪心策略。虽然贪心策略并不总是能获得最优的结果，但是可以证明，使用贪心策略的Dijkistra算法确实能够计算出最短路径。
+
+对于一个用邻接链表表示的带权重的有向图，Dijkistra算法的实现如下所示：
 
 ```python
+class MinHeap:
+    def __init__(self, nodes, distances):
+        self.heap = nodes
+        self.size = len(nodes)
+        self.distances = distances
+        self.item_position = {item: i for i, item in enumerate(self.heap)}
+        self._heapify()
+
+    def __len__(self):
+        return self.size
+
+    def _siftup(self, pos):
+        """当前元素上筛"""
+        old_item = self.heap[pos]
+        while pos > 0:
+            parent_pos = (pos - 1) >> 1
+            parent_item = self.heap[parent_pos]
+            if self.distances[old_item] < self.distances[parent_item]:
+                self.heap[pos] = parent_item
+                self.item_position[parent_item] = pos
+                pos = parent_pos
+            else:
+                break
+        self.heap[pos] = old_item
+        self.item_position[old_item] = pos
+
+    def _siftdown(self, pos):
+        """当前元素下筛"""
+        old_item = self.heap[pos]
+        child_pos = 2 * pos + 1  # left child position
+        while child_pos < self.size:
+            child_item = self.heap[child_pos]
+            right_child_pos = child_pos + 1
+            right_child_item = self.heap[right_child_pos]
+            if right_child_pos < self.size and \
+                    self.distances[child_item] > self.distances[right_child_item]:
+                child_pos = right_child_pos
+            if self.distances[old_item] > self.distances[child_item]:
+                self.heap[pos] = child_item
+                self.item_position[child_item] = pos
+                pos = child_pos
+                child_pos = 2 * pos + 1  # 更新循环判断条件
+            else:
+                break
+        self.heap[pos] = old_item
+        self.item_position[old_item] = pos
+
+    def _heapify(self):
+        for i in reversed(range(self.size // 2)):
+            self._siftdown(i)
+
+    def extract_min(self):
+        old_item = self.heap[0]
+        self.heap[0] = self.heap[self.size - 1]
+        self.item_position[self.heap[0]] = 0
+        self.heap[self.size - 1] = old_item
+        self.item_position[old_item] = self.size - 1
+        self.size -= 1
+        self._siftdown(0)
+        return old_item
+
+    def decrease_key(self, item):
+        pos = self.item_position[item]
+        self._siftup(pos)
+
+
 def intialize_single_source(graph, start):
     distances = {}
     predecessors = {}
@@ -5186,36 +5256,28 @@ def intialize_single_source(graph, start):
     return distances, predecessors
 
 
-def relax(u, v, w, distances, predecessors):
+def relax(u, v, w, distances, predecessors, priority_queue):
     if distances[v] > distances[u] + w[(u, v)]:
         distances[v] = distances[u] + w[(u, v)]
         predecessors[v] = u
+        priority_queue.decrease_key(v)
 
 
 def dijkistra(graph, weights, start):
-    import heapq  # 使用heapq实现优先队列
     distances, predecessors = intialize_single_source(graph, start)
-    visited = {node: False for node in graph.keys()}
-    priority_queue = []
-    for node, d in distances.items():
-        if not visited[node]:
-            priority_queue.append([d, node])
-    heapq.heapify(priority_queue)
+    visited = []
+    priority_queue = MinHeap(list(graph.keys()), distances)
 
     while len(priority_queue) > 0:
-        d, node = heapq.heappop(priority_queue)
-        if visited[node]:
-            continue
-        visited[node] = True
+        node = priority_queue.extract_min()
+        visited.append(node)
         for adj_node in graph[node]:
-            if visited[adj_node]:
-                continue
-            relax(node, adj_node, weights, distances, predecessors)
-            heapq.heappush(priority_queue, [distances[adj_node], adj_node])
-    return distances, predecessors
+            relax(node, adj_node, weights, distances, predecessors, priority_queue)
+    return visited, distances, predecessors
 
 
 if __name__ == "__main__":
+    # 算法导论 图24-6
     graph = {
         "s": ["t", "y"],
         "t": ["x", "y"],
@@ -5230,9 +5292,11 @@ if __name__ == "__main__":
         ("y", "t"): 3, ("y", "x"): 9, ("y", "z"): 2,
         ("z", "s"): 7, ("z", "x"): 6,
     }
-    distances, predecessors = dijkistra(graph, weights, "s")
+    visited, distances, predecessors = dijkistra(graph, weights, "s")
+    print(visited)
     print(distances)
     print(predecessors)
+    # ['s', 'y', 'z', 't', 'x']
     # {'s': 0, 't': 8, 'x': 9, 'y': 5, 'z': 7}
     # {'s': None, 't': 'y', 'x': 't', 'y': 's', 'z': 'y'}
 ```
