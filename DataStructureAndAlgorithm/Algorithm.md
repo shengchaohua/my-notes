@@ -277,6 +277,7 @@ class Solution:
 ```
 
 ## 合并区间
+
 > [Leetcode 56. 合并区间](https://leetcode-cn.com/problems/merge-intervals/)
 
 > 给出一个区间的集合，请合并所有重叠的区间。
@@ -297,8 +298,8 @@ class Solution:
         return res
 ```
 
-
 ## 根据身高重建队列
+
 > [Leetcode 406. 根据身高重建队列](https://leetcode-cn.com/problems/queue-reconstruction-by-height/)
 
 > 假设有打乱顺序的一群人站成一个队列。 每个人由一个整数对(h, k)表示，其中h是这个人的身高，k是排在这个人前面且身高大于或等于h的人数。 编写一个算法来重建这个队列。
@@ -310,21 +311,14 @@ class Solution:
 > ```
 > 输入:
 > [[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]
+> 
 > 输出:
 > [[5,0], [7,0], [5,2], [6,1], [4,4], [7,1]]
 > ```
 
-```
-输入:
-[[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]
-
-输出:
-[[5,0], [7,0], [5,2], [6,1], [4,4], [7,1]]
-```
-
 **解析**：按身高降序、人数升序排序。
 
-> [Leetcode 官方题解](https://leetcode-cn.com/problems/queue-reconstruction-by-height/solution/gen-ju-shen-gao-zhong-jian-dui-lie-by-leetcode/)
+> 参考 [Leetcode 官方题解](https://leetcode-cn.com/problems/queue-reconstruction-by-height/solution/gen-ju-shen-gao-zhong-jian-dui-lie-by-leetcode/)
 
 ```python
 class Solution:
@@ -341,12 +335,13 @@ class Solution:
 > [Leetcode 剑指 Offer 51. 数组中的逆序对](https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/)
 
 > 在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。
-
+>
 > 示例：
-```
-输入: [7,5,6,4]
-输出: 5
-```
+>
+> ```
+> 输入: [7,5,6,4]
+> 输出: 5
+> ```
 
 **解析**：使用归并排序。
 
@@ -385,16 +380,16 @@ class Solution:
 ## 翻转对
 > [Leetcode 493. 翻转对](https://leetcode-cn.com/problems/reverse-pairs/)
 
-> 给定一个数组`nums`，如果`i < j`且`nums[i]>2*nums[j]`我们就将`(i, j)`称作一个重要翻转对。
-
+> 给定一个数组`nums`，如果`i < j`且`nums[i] > 2 * nums[j]`我们就将`(i, j)`称作一个重要翻转对。
+>
 > 你需要返回给定数组中的重要翻转对的数量。
-
-> 示例 1:
-
-```
-输入: [1,3,2,3,1]
-输出: 2
-```
+>
+> 示例1：
+>
+> ```
+> 输入: [1,3,2,3,1]
+> 输出: 2
+> ```
 
 **解析**：
 
@@ -438,18 +433,18 @@ class Solution:
 > [Leetcode 315. 计算右侧小于当前元素的个数](https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/)
 
 > 给定一个整数数组 nums，按要求返回一个新数组counts。数组counts有该性质：`counts[i] `的值是`nums[i]`右侧小于`nums[i]`的元素的数量。
-
+>
 > 示例：
-
-```
-输入：nums = [5,2,6,1]
-输出：[2,1,1,0] 
-解释：
-5 的右侧有 2 个更小的元素 (2 和 1)
-2 的右侧有 1 个更小的元素 (1)
-6 的右侧有 1 个更小的元素 (1)
-1 的右侧有 0 个更小的元素
-```
+>
+> ```
+> 输入：nums = [5,2,6,1]
+> 输出：[2,1,1,0] 
+> 解释：
+> 5 的右侧有 2 个更小的元素 (2 和 1)
+> 2 的右侧有 1 个更小的元素 (1)
+> 6 的右侧有 1 个更小的元素 (1)
+> 1 的右侧有 0 个更小的元素
+> ```
 
 **解析**：二分查找、归并排序、树状数组等。
 
@@ -499,26 +494,26 @@ class Solution:
 ```
 
 3、树状数组
-```python
+
 ==TODO==
-```
 
 
 ## 区间和的个数
 > [Leetcode 327. 区间和的个数](https://leetcode-cn.com/problems/count-of-range-sum/)
 
 > 给定一个整数数组`nums`，返回区间和在`[lower,upper]`之间的个数，包含`lower`和`upper`。
-
+>
 > 区间和`S(i, j)`表示在`nums`中，位置从`i`到`j`的元素之和，包含`i`和`j`(`i≤j`)。
-
-> 说明: 最直观的算法复杂度是`O(n2)`，请在此基础上优化你的算法。
-
-> 示例:
-```
-输入: nums = [-2,5,-1], lower = -2, upper = 2,
-输出: 3 
-解释: 3个区间分别是: [0,0], [2,2], [0,2]，它们表示的和分别为: -2, -1, 2。
-```
+>
+> 说明: 最直观的算法复杂度是$O(n^2)$，请在此基础上优化你的算法。
+>
+> 示例：
+>
+> ```
+> 输入: nums = [-2,5,-1], lower = -2, upper = 2,
+> 输出: 3 
+> 解释: 3个区间分别是: [0,0], [2,2], [0,2]，它们表示的和分别为: -2, -1, 2。
+> ```
 
 **解析**：
 
@@ -526,14 +521,14 @@ class Solution:
 
 
 
-
 # 数组
-## 两/三数之和
-### 两数之和
+
+## 两数之和
+
 > [Leetcode 1. 两数之和](https://leetcode-cn.com/problems/two-sum/)
 
 > 给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那两个整数，并返回他们的数组下标。
-
+>
 > 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素不能使用两遍。
 
 **解析**：
@@ -548,12 +543,12 @@ class Solution:
                 saved[num] = i 
 ```
 
+## 两数之和 II - 输入有序数组
 
-### 两数之和 II - 输入有序数组
 > [Leetcode 167. 两数之和 II - 输入有序数组](https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/)
 
 > 给定一个已按照升序排列 的有序数组，找到两个数使得它们相加之和等于目标数。
-
+>
 > 函数应该返回这两个下标值 index1 和 index2，其中 index1 必须小于 index2。
 
 **解析**：双指针。
@@ -574,12 +569,12 @@ class Solution:
         return []
 ```
 
+## 三数之和
 
-### 三数之和
 > [Leetcode 15. 三数之和](https://leetcode-cn.com/problems/3sum/)
 
 > 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
-
+>
 > 注意：答案中不可以包含重复的三元组。
 
 **解析**：注意去重！
@@ -598,8 +593,7 @@ class Solution:
             if nums[i] > 0:
                 break
             if i > 0 and nums[i] == nums[i - 1]:
-                continue
-                
+                continue  
             left = i + 1
             right = len(nums) - 1
             while left < right:
@@ -616,21 +610,20 @@ class Solution:
                     left += 1
                 else:
                     right -= 1
-
         return res
 ```
 
 
 ## 连续子数组的最大和
 > [Leetcode 53. 最大子序和](https://leetcode-cn.com/problems/maximum-subarray/)
-
+>
 > [Leetcode 剑指 Offer 42. 连续子数组的最大和](https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/)
 
 > 给定一个整数数组 nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
 
 **解析**：题目要求子数组不为空，所以连续子数组的和可以为负。
 
-> [Python实现 《算法导论 第三版》中的算法 第4章 分治策略](https://blog.csdn.net/shengchaohua163/article/details/82810189)
+> 参考 [Python实现 《算法导论 第三版》中的算法 第4章 分治策略](https://blog.csdn.net/shengchaohua163/article/details/82810189)
 
 ```python
 class Solution:
@@ -667,7 +660,7 @@ class Solution:
 > [Leetcode 283. 移动零](https://leetcode-cn.com/problems/move-zeroes/)
 
 > 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
-
+>
 > 说明: 1. 必须在原数组上操作，不能拷贝额外的数组。2. 尽量减少操作次数。
 
 **解析**：保存一个下标，用来标识0的位置。
@@ -755,7 +748,7 @@ class Solution:
 > [Leetcode 665. 非递减数列](https://leetcode-cn.com/problems/non-decreasing-array/)
 
 > 给你一个长度为 n 的整数数组，请你判断在 **最多** 改变 1 个元素的情况下，该数组能否变成一个非递减数列。
-
+>
 > 我们是这样定义一个非递减数列的：对于数组中所有的 i (0 <= i <= n-2)，总满足 nums[i] <= nums[i + 1]。
 
 **解析**：需要考虑两种情况。
@@ -789,9 +782,9 @@ class Solution:
 > [Leetcode 448. 找到所有数组中消失的数字](https://leetcode-cn.com/problems/find-all-numbers-disappeared-in-an-array/)
 
 > 给定一个范围在  1 ≤ a[i] ≤ n ( n = 数组大小 ) 的 整型数组，数组中的元素一些出现了两次，另一些只出现一次。
-
+>
 > 找到所有在 [1, n] 范围之间没有出现在数组中的数字。
-
+>
 > 您能在不使用额外空间且时间复杂度为O(n)的情况下完成这个任务吗? 你可以假定返回的数组不算在额外空间内。
 
 **解析**：把数组下标和数组中的数字联系在一起：把下标为`i`的元素「标记」为负数，表示整数`i+1`在数组中存在。
@@ -814,9 +807,9 @@ class Solution:
 > [Leetcode 442. 数组中重复的数据](https://leetcode-cn.com/problems/find-all-duplicates-in-an-array/)
 
 > 给定一个整数数组 a，其中1 ≤ a[i] ≤ n （n为数组长度）, 其中有些元素出现两次而其他元素出现一次。
-
+>
 > 找到所有出现两次的元素。
-
+>
 > 你可以不用到任何额外空间并在O(n)时间复杂度内解决这个问题吗？
 
 **解析**：把数组下标和数组中的数字联系在一起：把下标为`i`的元素「标记」为负数，表示整数`i+1`在数组中存在。
@@ -838,16 +831,15 @@ class Solution:
 > [Leetcode 剑指 Offer 03. 数组中重复的数字](https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/)
 
 > 找出数组中重复的数字。
-
+>
 > 在一个长度为 n 的数组 nums 里的所有数字都在 0～n-1 的范围内。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。
-
+>
 > 示例1：
-
-```
-输入：
-[2, 3, 1, 0, 2, 5, 3]
-输出：2 或 3 
-```
+>
+> ```
+> 输入：[2, 3, 1, 0, 2, 5, 3]
+> 输出：2 或 3 
+> ```
 
 **解析**：考察沟通能力。
 
@@ -902,14 +894,16 @@ class Solution:
 > [Leetcode 287. 寻找重复数](https://leetcode-cn.com/problems/find-the-duplicate-number/)
 
 > 给定一个包含 n + 1 个整数的数组 nums，其数字都在 1 到 n 之间（包括 1 和 n），可知至少存在一个重复的整数。假设只有一个重复的整数，找出这个重复的数。
-
+>
 > 示例 1:
-```
-输入: [1,3,4,2,2]
-输出: 2
-```
-
+>
+> ```
+> 输入: [1,3,4,2,2]
+> 输出: 2
+> ```
+>
 > 说明：
+>
 > - 不能更改原数组（假设数组是只读的）。
 > - 只能使用额外的 O(1) 的空间。
 > - 时间复杂度小于 O(n2) 。
@@ -924,7 +918,7 @@ class Solution:
 > [Leetcode 41. 缺失的第一个正数](https://leetcode-cn.com/problems/first-missing-positive/)
 
 > 给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。
-
+>
 > 提示：你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。
 
 **解析**：最简单的方法是使用哈希表，但是不满足空间复杂度。
@@ -1028,21 +1022,24 @@ class Solution:
 > [Leetcode 974. 和可被 K 整除的子数组](https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/)
 
 > 给定一个整数数组`A`，返回其中元素之和可被`K`整除的（连续、非空）子数组的数目。
-
+>
 > 示例：
-```
-输入：A = [4,5,0,-2,-3,1], K = 5
-输出：7
-解释：
-有 7 个子数组满足其元素之和可被 K = 5 整除：
-[4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]
-```
+>
+> ```
+> 输入：A = [4,5,0,-2,-3,1], K = 5
+> 输出：7
+> 解释：
+> 有 7 个子数组满足其元素之和可被 K = 5 整除：
+> [4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]
+> ```
+>
 
 **解析**：
 
 > 参考 [Leetcode官方题解](https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/solution/he-ke-bei-k-zheng-chu-de-zi-shu-zu-by-leetcode-sol/)
 
 1、暴力，超时
+
 ```python
 class Solution:
     def subarraysDivByK(self, A: List[int], K: int) -> int:
@@ -1074,15 +1071,14 @@ class Solution:
         return res
 ```
 
-
-
 ## 多数元素/数组中出现次数超过一半的数字
-> [Leetcode 169. 多数元素](https://leetcode-cn.com/problems/majority-element/)
 
+> [Leetcode 169. 多数元素](https://leetcode-cn.com/problems/majority-element/)
+>
 > [Leetcode 剑指 Offer 39. 数组中出现次数超过一半的数字](https://leetcode-cn.com/problems/shu-zu-zhong-chu-xian-ci-shu-chao-guo-yi-ban-de-shu-zi-lcof/)
 
 > 给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数大于 ⌊ n/2 ⌋ 的元素。
-
+>
 > 你可以假设数组是非空的，并且给定的数组总是存在多数元素。
 
 **解析**：记录元素个数。
@@ -1106,7 +1102,7 @@ class Solution:
 
 ## 螺旋矩阵
 > [Leetcode 54. 螺旋矩阵](https://leetcode-cn.com/problems/spiral-matrix/)
-
+>
 > [Leetcode 剑指 Offer 29. 顺时针打印矩阵](https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/)
 
 > 给定一个包含 m x n 个元素的矩阵（m行,n列），请按照顺时针螺旋顺序，返回矩阵中的所有元素。
@@ -1153,18 +1149,18 @@ class Solution:
 > [Leetcode 59. 螺旋矩阵 II](https://leetcode-cn.com/problems/spiral-matrix-ii/)
 
 > 给定一个正整数 n，生成一个包含 1 到 n2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。
-
+>
 > 示例：
-
-```
-输入: 3
-输出:
-[
- [ 1, 2, 3 ],
- [ 8, 9, 4 ],
- [ 7, 6, 5 ]
-]
-```
+>
+> ```
+> 输入: 3
+> 输出:
+> [
+>  [ 1, 2, 3 ],
+>  [ 8, 9, 4 ],
+>  [ 7, 6, 5 ]
+> ]
+> ```
 
 **解析**：
 
@@ -1214,15 +1210,16 @@ class Solution:
 （注意：B 可以是 A 的任意子数组，包括整个数组 A。）
 
 > 给出一个整数数组 A，返回最长 “山脉” 的长度。
-
+>
 > 如果不含有 “山脉” 则返回 0。
-
+>
 > 示例 1：
-```
-输入：[2,1,4,7,3,2,5]
-输出：5
-解释：最长的 “山脉” 是 [1,4,7,3,2]，长度为 5。
-```
+>
+> ```
+> 输入：[2,1,4,7,3,2,5]
+> 输出：5
+> 解释：最长的 “山脉” 是 [1,4,7,3,2]，长度为 5。
+> ```
 
 **解析**：
 
@@ -1254,7 +1251,7 @@ class Solution:
 > [Leetcode 224. 基本计算器](https://leetcode-cn.com/problems/basic-calculator/)
 
 > 实现一个基本的计算器来计算一个简单的字符串表达式的值。
-
+>
 > 字符串表达式可以包含左括号`(`，右括号`)`，加号`+`，减号`-`，非负整数和空格` `。
 
 **解析**：
@@ -1263,8 +1260,6 @@ class Solution:
 
 ## 验证栈序列
 > [Leetcode 946. 验证栈序列](https://leetcode-cn.com/problems/validate-stack-sequences/)
-
-> [Leetcode 剑指 Offer 31. 栈的压入、弹出序列](https://leetcode-cn.com/problems/zhan-de-ya-ru-dan-chu-xu-lie-lcof/)
 
 > 给定 pushed 和 popped 两个序列，每个序列中的 值都不重复，只有当它们可能是在最初空栈上进行的推入 push 和弹出 pop 操作序列的结果时，返回 true；否则，返回 false。
 
@@ -1295,9 +1290,8 @@ class Solution:
 
 **解析**：增加一个辅助栈。
 
-```
+```python
 class MinStack:
-
     def __init__(self):
         self.stack = []
         self.min_eles = []
@@ -1472,7 +1466,7 @@ class Solution:
 > [Leetcode 739. 每日温度](https://leetcode-cn.com/problems/daily-temperatures/)
 
 > 请根据每日`气温`列表，重新生成一个列表。对应位置的输出为：要想观测到更高的气温，至少需要等待的天数。如果气温在这之后都不会升高，请在该位置用 0 来代替。
-
+>
 > 例如，给定一个列表 temperatures = [73, 74, 75, 71, 69, 72, 76, 73]，你的输出应该是 [1, 1, 4, 2, 1, 1, 0, 0]。
 
 **解析**：使用栈模拟。
@@ -1543,12 +1537,15 @@ class Solution:
 ```
 
 
+
 # 队列
+
 ## 滑动窗口最大值
+
 > [Leetcode 239. 滑动窗口最大值](https://leetcode-cn.com/problems/sliding-window-maximum/)
 
 > 给定一个数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
-
+>
 > 返回滑动窗口中的最大值。
 
 **解析**：
@@ -1584,29 +1581,13 @@ class Solution:
 > [Leetcode 480. 滑动窗口中位数](https://leetcode-cn.com/problems/sliding-window-median/)
 
 > 中位数是有序序列最中间的那个数。如果序列的大小是偶数，则没有最中间的数；此时中位数是最中间的两个数的平均数。
-
+>
 > 例如：
+>
 > - [2,3,4]，中位数是 3
 > - [2,3]，中位数是 (2 + 3) / 2 = 2.5
 
 > 给你一个数组 nums，有一个大小为 k 的窗口从最左端滑动到最右端。窗口中有 k 个数，每次窗口向右移动 1 位。你的任务是找出每次窗口移动后得到的新窗口中元素的中位数，并输出由它们组成的数组。
-
-> 示例：
-
-> 给出 nums = [1,3,-1,-3,5,3,6,7]，以及 k = 3。
-
-```
-窗口位置                      中位数
----------------               -----
-[1  3  -1] -3  5  3  6  7       1
- 1 [3  -1  -3] 5  3  6  7      -1
- 1  3 [-1  -3  5] 3  6  7      -1
- 1  3  -1 [-3  5  3] 6  7       3
- 1  3  -1  -3 [5  3  6] 7       5
- 1  3  -1  -3  5 [3  6  7]      6
-```
-
-> 因此，返回该滑动窗口的中位数数组 [1,-1,-1,3,5,6]。
 
 
 **解析**：二分法、堆。
@@ -1629,7 +1610,9 @@ class Solution:
         return res
 ```
 
-2、堆==TODO==
+2、堆
+
+==TODO==
 
 
 
@@ -1637,7 +1620,7 @@ class Solution:
 > [Leetcode 剑指 Offer 59 - II. 队列的最大值](https://leetcode-cn.com/problems/dui-lie-de-zui-da-zhi-lcof/)
 
 > 请定义一个队列并实现函数`max_value`得到队列里的最大值，要求函数`max_value`、`push_back`和`pop_front`的均摊时间复杂度都是O(1)。
-
+>
 > 若队列为空，`pop_front`和`max_value`需要返回 -1。
 
 **解析**：类似于最小栈。
@@ -1669,8 +1652,11 @@ class MaxQueue:
 ```
 
 
+
 # 链表
+
 ## 反转链表
+
 ### 反转链表
 > [Leetcode 206. 反转链表](https://leetcode-cn.com/problems/reverse-linked-list/)
 
@@ -2144,9 +2130,9 @@ class Solution:
 > [Leetcode 2. 两数相加](https://leetcode-cn.com/problems/add-two-numbers/)
 
 > 给出两个 非空 的链表用来表示两个非负的整数。其中，它们各自的位数是按照 **逆序** 的方式存储的，并且它们的每个节点只能存储 一位 数字。
-
+>
 > 如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。
-
+>
 > 您可以假设除了数字 0 之外，这两个数都不会以 0 开头。
 
 **解析**：
@@ -2176,9 +2162,9 @@ class Solution:
 > [Leetcode 445. 两数相加 II](https://leetcode-cn.com/problems/add-two-numbers-ii/)
 
 > 给你两个 非空 链表来代表两个非负整数。数字最高位位于链表开始位置。它们的每个节点只存储一位数字。将这两数相加会返回一个新的链表。
-
+>
 > 你可以假设除了数字 0 之外，这两个数字都不会以零开头。
-
+>
 > 进阶：如果输入链表不能修改该如何处理？换句话说，你不能对列表中的节点进行翻转。
 
 **解析**：栈！
@@ -2212,8 +2198,8 @@ class Solution:
 > [Leetcode 143. 重排链表](https://leetcode-cn.com/problems/reorder-list/)
 
 > 给定一个单链表 L：L0→L1→…→Ln-1→Ln ，
-将其重新排列后变为： L0→Ln→L1→Ln-1→L2→Ln-2→…
-
+> 将其重新排列后变为： L0→Ln→L1→Ln-1→L2→Ln-2→…
+>
 > 你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
 
 **解析**：
@@ -2252,7 +2238,9 @@ class Solution:
 ```
 
 
+
 # 字符串
+
 ## 实现 strStr() - 字符串搜索
 > [Leetcode 28. 实现 strStr()](https://leetcode-cn.com/problems/implement-strstr/)
 
