@@ -2327,8 +2327,6 @@ class Solution:
 ## 字符串转换整数 (atoi)
 > [Leetcode 8. 字符串转换整数 (atoi)](https://leetcode-cn.com/problems/string-to-integer-atoi/)
 
-> [Leetcode 剑指 Offer 67. 把字符串转换成整数](https://leetcode-cn.com/problems/ba-zi-fu-chuan-zhuan-huan-cheng-zheng-shu-lcof/submissions/)
-
 > 请你来实现一个 atoi 函数，使其能将字符串转换成整数。
 
 **解析**：不要使用`strip`函数。
@@ -2435,23 +2433,6 @@ class Solution:
 > [Leetcode 13. 罗马数字转整数](https://leetcode-cn.com/problems/roman-to-integer/)
 
 > 罗马数字包含以下七种字符:`I`，`V`，`X`，`L`，`C`，`D`和`M`。
-```
-字符          数值
-I             1
-V             5
-X             10
-L             50
-C             100
-D             500
-M             1000
-```
-
-> 例如， 罗马数字 2 写做`II`，即为两个并列的 1。12 写做`XII`，即为`X`+`II`。 27 写做`XXVII`, 即为`XX`+`V`+`II`。
-
-> 通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做`IIII`，而是`IV`。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为`IX`。这个特殊的规则只适用于以下六种情况：
-> - `I`可以放在`V`(5) 和`X`(10) 的左边，来表示 4 和 9。
-> - `X`可以放在`L`(50) 和`C`(100) 的左边，来表示 40 和 90。
-> - `C`可以放在`D`(500) 和`M`(1000) 的左边，来表示 400 和 900。
 
 > 给定一个罗马数字，将其转换成整数。输入确保在 1 到 3999 的范围内。
 
@@ -2614,27 +2595,27 @@ class Solution:
 > [Leetcode 443. 压缩字符串](https://leetcode-cn.com/problems/string-compression/)
 
 > 给定一组字符，使用原地算法将其压缩。
-
+>
 > 压缩后的长度必须始终小于或等于原数组长度。
-
+>
 > 数组的每个元素应该是长度为 1 的字符（不是 int 整数类型）。
-
+>
 > 在完成原地修改输入数组后，返回数组的新长度。
-
+>
 > 进阶：你能否仅使用O(1) 空间解决问题？
-
+>
 > 示例：
-
-```
-输入：
-["a","a","b","b","c","c","c"]
-
-输出：
-返回 6 ，输入数组的前 6 个字符应该是：["a","2","b","2","c","3"]
-
-说明：
-"aa" 被 "a2" 替代。"bb" 被 "b2" 替代。"ccc" 被 "c3" 替代。
-```
+>
+> ```
+> 输入：
+> ["a","a","b","b","c","c","c"]
+> 
+> 输出：
+> 返回 6 ，输入数组的前 6 个字符应该是：["a","2","b","2","c","3"]
+> 
+> 说明：
+> "aa" 被 "a2" 替代。"bb" 被 "b2" 替代。"ccc" 被 "c3" 替代。
+> ```
 
 **解析**：
 
@@ -2689,10 +2670,10 @@ class Solution:
 > [Leetcode 696. 计数二进制子串](https://leetcode-cn.com/problems/count-binary-substrings/)
 
 > 给定一个字符串`s`，计算具有相同数量0和1的非空(连续)子字符串的数量，并且这些子字符串中的所有0和所有1都是组合在一起的。
-
+>
 > 重复出现的子串要计算它们出现的次数。
 
-**解析**：
+> **解析**：
 
 1、中心扩展法
 
@@ -2733,7 +2714,7 @@ class Solution(object):
 > [Leetcode 1071. 字符串的最大公因子](https://leetcode-cn.com/problems/greatest-common-divisor-of-strings/)
 
 > 对于字符串`S`和`T`，只有在`S = T + ... + T`（`T`与自身连接 1 次或多次）时，我们才认定“`T` 能除尽 `S`”。
-
+>
 > 返回最长字符串`X`，要求满足`X`能除尽`str1`且`X`能除尽`str2`。
 
 **解析**：
@@ -2784,13 +2765,6 @@ class Solution:
 > [Leetcode 43. 字符串相乘](https://leetcode-cn.com/problems/multiply-strings/)
 
 > 给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式。
-
-> 示例 2:
-
-```
-输入: num1 = "123", num2 = "456"
-输出: "56088"
-```
 
 **解析**：
 
