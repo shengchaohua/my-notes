@@ -5033,7 +5033,138 @@ if __name__ == "__main__":
 
 对于一个用邻接链表表示的带权重的连通无向图，Prim算法的实现如下所示：
 
+```python
+class MinHeap:
+    def __init__(self, nodes, keys):
+        """
+        :param nodes: 保存结点元素
+        :param keys: 保存结点的关键值
+        item_pos: 保存结点元素在堆中的下标
+        """
+        self.heap = nodes
+        self.size = len(nodes)
+        self.keys = keys
+        self.item_pos = {item: i for i, item in enumerate(self.heap)}
+        self._heapify()
 
+    def __len__(self):
+        return self.size
+
+    def _siftup(self, pos):
+        """当前元素上筛"""
+        old_item = self.heap[pos]
+        while pos > 0:
+            parent_pos = (pos - 1) >> 1
+            parent_item = self.heap[parent_pos]
+            if self.keys[old_item] < self.keys[parent_item]:
+                self.heap[pos] = parent_item
+                self.item_pos[parent_item] = pos
+                pos = parent_pos
+            else:
+                break
+        self.heap[pos] = old_item
+        self.item_pos[old_item] = pos
+
+    def _siftdown(self, pos):
+        """当前元素下筛"""
+        old_item = self.heap[pos]
+        child_pos = 2 * pos + 1  # left child position
+        while child_pos < self.size:
+            child_item = self.heap[child_pos]
+            right_child_pos = child_pos + 1
+            right_child_item = self.heap[right_child_pos]
+            if right_child_pos < self.size and \
+                    self.keys[child_item] > self.keys[right_child_item]:
+                child_pos = right_child_pos
+                child_item = self.heap[child_pos]
+            if self.keys[old_item] > self.keys[child_item]:
+                self.heap[pos] = child_item
+                self.item_pos[child_item] = pos
+                pos = child_pos
+                child_pos = 2 * pos + 1  # 更新循环判断条件
+            else:
+                break
+        self.heap[pos] = old_item
+        self.item_pos[old_item] = pos
+
+    def _heapify(self):
+        for i in reversed(range(self.size // 2)):
+            self._siftdown(i)
+
+    def extract_min(self):
+        old_item = self.heap[0]
+        self.heap[0] = self.heap[self.size - 1]
+        self.item_pos[self.heap[0]] = 0
+        self.heap[self.size - 1] = old_item
+        self.item_pos[old_item] = self.size - 1
+        self.size -= 1
+        self._siftdown(0)
+        return old_item
+
+    def decrease_key(self, item):
+        pos = self.item_pos[item]
+        self._siftup(pos)
+
+    def exist(self, item):
+        return self.item_pos[item] < self.size
+
+
+def mst_prim(graph, weights, start):
+    keys = {}  # 保存每个结点的关键值（与树的最小距离）
+    predecessors = {}  # 保存每个结点在最小生成树中的父结点
+    for node in graph.keys():
+        keys[node] = float("INF")
+        predecessors[node] = None
+    keys[start] = 0
+
+    priority_queue = MinHeap(list(graph.keys()), keys)
+    minimum_spanning_tree = []
+    minimum_cost = 0
+
+    while len(priority_queue) > 0:
+        node = priority_queue.extract_min()
+        minimum_spanning_tree.append((node, predecessors[node]))
+        edge = (node, predecessors[node])
+        if edge in weights:
+            minimum_cost += weights[edge]
+        for adj_node in graph[node]:
+            if priority_queue.exist(adj_node) and weights[(node, adj_node)] < keys[adj_node]:
+                predecessors[adj_node] = node
+                keys[adj_node] = weights[(node, adj_node)]
+                priority_queue.decrease_key(adj_node)
+
+    return minimum_spanning_tree, minimum_cost
+
+
+if __name__ == "__main__":
+    graph = {
+        "a": ["b", "h"],
+        "b": ["a", "c", "h"],
+        "c": ["b", "d", "f", "i"],
+        "d": ["c", "e", "f"],
+        "e": ["d", "f"],
+        "f": ["c", "d", "e", "g"],
+        "g": ["f", "h", "i"],
+        "h": ["a", "b", "g", "i"],
+        "i": ["c", "g", "h"],
+    }
+    weights = {
+        ("a", "b"): 4, ("a", "h"): 8,
+        ("b", "a"): 4, ("b", "c"): 8, ("b", "h"): 11,
+        ("c", "b"): 8, ("c", "d"): 7, ("c", "f"): 4, ("c", "i"): 2,
+        ("d", "c"): 7, ("d", "e"): 9, ("d", "f"): 14,
+        ("e", "d"): 9, ("e", "f"): 10,
+        ("f", "c"): 4, ("f", "d"): 14, ("f", "e"): 10, ("f", "g"): 2,
+        ("g", "f"): 2, ("g", "h"): 1, ("g", "i"): 6,
+        ("h", "a"): 8, ("h", "b"): 11, ("h", "g"): 1, ("h", "i"): 7,
+        ("i", "c"): 2, ("i", "g"): 6, ("i", "h"): 7,
+    }
+    minimum_spanning_tree, minimum_cost = mst_prim(graph, weights, "a")
+    print(minimum_spanning_tree)
+    print(minimum_cost)
+    # [('a', None), ('b', 'a'), ('h', 'a'), ('g', 'h'), ('f', 'g'), ('c', 'f'), ('i', 'c'), ('d', 'c'), ('e', 'd')]
+    # 37
+```
 
 Prim算法的运行时间取决于最小优先队列的实现方式。如果最小优先队列使用二叉最小优先队列（最小堆），该算法的时间复杂度为$O(E\lg{V})$。从渐进意义上来说，它与Kruskal算法的运行时间相同。如果使用斐波那契堆来实现最小优先队列，则Prim算法的运行时间将改进到$O(E+V\lg{V})$。
 
@@ -5136,69 +5267,7 @@ Dijkistra算法解决的是带权重的有向图上的单源最短路径问题�
 
 ```python
 class MinHeap:
-    def __init__(self, nodes, distances):
-        self.heap = nodes
-        self.size = len(nodes)
-        self.distances = distances
-        self.item_position = {item: i for i, item in enumerate(self.heap)}
-        self._heapify()
-
-    def __len__(self):
-        return self.size
-
-    def _siftup(self, pos):
-        """当前元素上筛"""
-        old_item = self.heap[pos]
-        while pos > 0:
-            parent_pos = (pos - 1) >> 1
-            parent_item = self.heap[parent_pos]
-            if self.distances[old_item] < self.distances[parent_item]:
-                self.heap[pos] = parent_item
-                self.item_position[parent_item] = pos
-                pos = parent_pos
-            else:
-                break
-        self.heap[pos] = old_item
-        self.item_position[old_item] = pos
-
-    def _siftdown(self, pos):
-        """当前元素下筛"""
-        old_item = self.heap[pos]
-        child_pos = 2 * pos + 1  # left child position
-        while child_pos < self.size:
-            child_item = self.heap[child_pos]
-            right_child_pos = child_pos + 1
-            right_child_item = self.heap[right_child_pos]
-            if right_child_pos < self.size and \
-                    self.distances[child_item] > self.distances[right_child_item]:
-                child_pos = right_child_pos
-            if self.distances[old_item] > self.distances[child_item]:
-                self.heap[pos] = child_item
-                self.item_position[child_item] = pos
-                pos = child_pos
-                child_pos = 2 * pos + 1  # 更新循环判断条件
-            else:
-                break
-        self.heap[pos] = old_item
-        self.item_position[old_item] = pos
-
-    def _heapify(self):
-        for i in reversed(range(self.size // 2)):
-            self._siftdown(i)
-
-    def extract_min(self):
-        old_item = self.heap[0]
-        self.heap[0] = self.heap[self.size - 1]
-        self.item_position[self.heap[0]] = 0
-        self.heap[self.size - 1] = old_item
-        self.item_position[old_item] = self.size - 1
-        self.size -= 1
-        self._siftdown(0)
-        return old_item
-
-    def decrease_key(self, item):
-        pos = self.item_position[item]
-        self._siftup(pos)
+    pass  # 与Prim算法中的相同
 
 def intialize_single_source(graph, start):
     distances = {}  # 结点的关键值
