@@ -11,515 +11,6 @@
 刷leetcode时随手记录！默认使用Python语言！
 
 
-# 排序
-## 经典排序算法
-> [Leetcode 912. 排序数组](https://leetcode-cn.com/problems/sort-an-array/)
-
-> 给你一个整数数组 nums，请你将该数组升序排列。
-
-代码格式非Leetcode！
-
-一、冒泡排序
-```python
-def bubble_sort(A):
-    for i in range(len(A)):
-        for j in range(0, len(A) - i - 1):
-            if A[j] > A[j + 1]:
-                A[j], A[j + 1] = A[j + 1], A[j]
-```
-
-二、插入排序
-```python
-def insert_sort(A):
-    for i in range(1, len(A)):
-        temp = A[i]
-        j = i - 1
-        while j >= 0 and A[j] > temp:
-            A[j + 1] = A[j]
-            j -= 1
-        A[j + 1] = temp  # 不满条件的下一个位置
-```
-
-三、选择排序
-```python
-def select_sort(A):
-    for i in range(0, len(A)):
-        k = i
-        # Find the smallest num and record its index
-        for j in range(i, len(A)):
-            if A[j] < A[k]:
-                k = j
-        if k != i:
-            A[i], A[k] = A[k], A[i]
-```
-
-四、归并排序
-
-1、返回数组法。便于记忆。
-```python
-def merge(A, B):
-    # return sorted(A + B)
-    temp = []
-    i, j = 0, 0
-    while i < len(A) and j < len(B):
-        if A[i] <= B[j]:
-            temp.append(A[i])
-            i += 1
-        else:
-            temp.append(B[j])
-            j += 1
-    temp.extend(A[i:])
-    temp.extend(B[j:])
-    return temp
-
-
-def merge_sort(A):
-    if len(A) <= 1:
-        return A
-    mid = len(A) // 2
-    left = merge_sort(A[:mid])
-    right = merge_sort(A[mid:])
-    return merge(left, right)
-    
-# res = merge_sort(A, 0, len(A) - 1)
-```
-
-2、原地操作法。函数参数稍微复杂。
-
-```python
-def merge(A, left, mid, right):
-    """A[left:mid+1], A[mid+1:right+1]"""
-    temp = []  # 用于存储数字
-    i, j = left, mid + 1
-    while i <= mid and j <= right:
-        if A[i] <= A[j]:
-            temp.append(A[i])
-            i += 1
-        else:
-            temp.append(A[j])
-            j += 1
-    temp.extend(A[i: mid + 1])
-    temp.extend(A[j: right + 1])
-    A[left: right + 1] = temp
-
-
-def merge_sort(A, left, right):
-    if left < right:
-        mid = (left + right) // 2
-        merge_sort(A, left, mid)
-        merge_sort(A, mid + 1, right)
-        merge(A, left, mid, right)
-        
-# merge_sort(A, 0, len(A) - 1)
-```
-
-五、快速排序
-
-介绍三种写法的快速排序。三种写法的`quick_sort`函数相同，在此给出。
-
-推荐使用**填坑法**，比较直观，便于记忆。
-
-```python
-def quick_sort(A, left, right):
-    if left < right:
-        p = partition(A, left, right)
-        quick_sort(A, left, p - 1)
-        quick_sort(A, p + 1, right)
-        
-# quick_sort(A, 0, len(A) - 1)
-```
-
-1、填坑法。第一个元素当作轴元素。注意先从右往左比较，大于等于号；再从左往右比较，小于号。
-```python
-def partition(A, left, right):
-    pivot = A[left]
-    while left < right:
-        while left < right and A[right] >= pivot:
-            right -= 1
-        A[left] = A[right]  # 看作填坑
-        while left < right and A[left] < pivot:
-            left += 1
-        A[right] = A[left]  # 看作填坑
-    A[left] = pivot
-    return left
-```
-
-2、交换法。第一个元素当作轴元素。注意先从右往左比较，大于等于号；再从左往右比较，小于等于号。
-```python
-def partition(A, left, right):
-    pivot_idx = left
-    pivot = A[left]
-    while left < right:
-        while left < right and A[right] >= pivot:
-            right -= 1
-        while left < right and A[left] <= pivot:
-            left += 1
-        if left < right:  # 进行交换
-            A[left], A[right] = A[right], A[left]
-    A[pivot_idx], A[left] = A[left], A[pivot_idx]
-    return left
-```
-
-3、顺序遍历法。算法导论中的写法，选择最后一个元素作为轴元素。
-```python
-def partition(A, left, right):
-    pivot = A[right]  # 选择最后一个元素作为轴元素
-    store_idx = left - 1
-    for cur in range(left, right):  # 顺序遍历
-        if A[cur] <= pivot:
-            store_idx += 1
-            A[store_idx], A[cur] = A[cur], A[store_idx]
-    A[store_idx + 1], A[right] = A[right], A[store_idx + 1]
-    return store_idx + 1
-```
-
-选择第一个元素作为轴元素，而且该写法可以推广到链表排序。
-```python
-def partition(A, left, right):
-    pivot = A[left]  # 选择第一个元素作为轴元素
-    store_idx = left
-    for cur in range(left + 1, right + 1):  # 顺序遍历
-        if A[cur] <= pivot:
-            store_idx += 1
-            A[store_idx], A[cur] = A[cur], A[store_idx]
-    A[left], A[store_idx] = A[store_idx], A[left]
-    return store_idx
-```
-
-七、堆排序
-> [Python实现 《算法导论 第三版》中的算法 第6章 堆排序](https://blog.csdn.net/shengchaohua163/article/details/83038413)
-
-```python
-def get_parent(i):
-    return (i - 1) // 2
-
-
-def get_left(i):
-    return 2 * i + 1
-
-
-def get_right(i):
-    return 2 * i + 2
-
-
-def max_heapify_recursive(A, heap_size, i):
-    l = get_left(i)
-    r = get_right(i)
-    largest_ind = i
-    if l < heap_size and A[l] > A[largest_ind]:
-        largest_ind = l
-    if r < heap_size and A[r] > A[largest_ind]:
-        largest_ind = r
-    if largest_ind == i:
-        return
-    else:
-        A[i], A[largest_ind] = A[largest_ind], A[i]
-        max_heapify_recursive(A, heap_size, largest_ind)
-    
-    
-def max_heapify_loop(A, heap_size, i): 
-    while i < heap_size:
-        l = get_left(i)
-        r = get_right(i)
-        largest_ind = i
-        if l < heap_size and A[l] > A[largest_ind]:
-            largest_ind = l
-        if r < heap_size and A[r] > A[largest_ind]:
-            largest_ind = r
-        if largest_ind == i:
-            break
-        else:
-            A[i], A[largest_ind] = A[largest_ind], A[i]
-            i = largest_ind
-
-
-def build_max_heap(A, heap_size):
-    begin = len(A)//2 - 1  # len(A)//2 - 1是堆中第一个叶子节点的前一个节点
-    for i in range(begin, -1, -1):
-        max_heapify_loop(A, heap_size, i)
-
-
-def heap_sort(A):
-    heap_size = len(A)
-    build_max_heap(A, heap_size)
-    for i in range(len(A)-1, 0, -1):
-        A[0], A[i] = A[i], A[0]  # 每次固定最后一个元素，并将堆大小减一
-        heap_size -= 1
-        max_heapify_loop(A, heap_size, 0)
-```
-
-八、线性时间排序
-> [Python实现 《算法导论 第三版》中的算法 第8章 线性时间排序](https://blog.csdn.net/shengchaohua163/article/details/83444059)
-
-比较排序的时间复杂度下界是$O(n\lg n)$。归并排序、堆排序和快速排序能在$O(n\lg n)$时间内排序`n`个数。归并排序和堆排序在最坏情况下能够达到该时间，快速排序在平均情况达到该时间（快速排序最坏情况下是$O(n^2)$）。
-
-该文介绍了三种线性时间复杂度的排序算法：计数排序、基数排序和桶排序。
-
-
-
-## 把数组排成最小的数
-> [Leetcode 剑指 Offer 45. 把数组排成最小的数](https://leetcode-cn.com/problems/ba-shu-zu-pai-cheng-zui-xiao-de-shu-lcof/)
-
-> 输入一个非负整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
-
-解析：字典顺序。
-
-```python
-class Solution:
-    def minNumber(self, nums: List[int]) -> str:
-        str_nums = [str(num) for num in nums]  
-        for i in range(len(nums)):
-            for j in range(len(nums) - i - 1):
-                if str_nums[j] + str_nums[j + 1] > str_nums[j + 1] + str_nums[i]:
-                    str_nums[j], str_nums[j + 1] = str_nums[j + 1], str_nums[j]
-        
-        return "".join(str_nums)
-```
-
-## 合并区间
-
-> [Leetcode 56. 合并区间](https://leetcode-cn.com/problems/merge-intervals/)
-
-> 给出一个区间的集合，请合并所有重叠的区间。
-
-**解析**：排序即可。
-
-```python
-class Solution:
-    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        intervals.sort(key=lambda ele: ele[0])
-        res = []
-        for inter in intervals:
-            if res and res[-1][1] >= inter[0]:
-                last = res.pop()
-                res.append([last[0], max(last[1], inter[1])])
-            else:
-                res.append(inter)
-        return res
-```
-
-## 根据身高重建队列
-
-> [Leetcode 406. 根据身高重建队列](https://leetcode-cn.com/problems/queue-reconstruction-by-height/)
-
-> 假设有打乱顺序的一群人站成一个队列。 每个人由一个整数对(h, k)表示，其中h是这个人的身高，k是排在这个人前面且身高大于或等于h的人数。 编写一个算法来重建这个队列。
->
-> 注意：总人数少于1100人。
->
-> 示例：
->
-> ```
-> 输入:
-> [[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]
-> 
-> 输出:
-> [[5,0], [7,0], [5,2], [6,1], [4,4], [7,1]]
-> ```
-
-**解析**：按身高降序、人数升序排序。
-
-> 参考 [Leetcode 官方题解](https://leetcode-cn.com/problems/queue-reconstruction-by-height/solution/gen-ju-shen-gao-zhong-jian-dui-lie-by-leetcode/)
-
-```python
-class Solution:
-    def reconstructQueue(self, people: List[List[int]]) -> List[List[int]]:
-        people.sort(key = lambda x: (-x[0], x[1]))
-        res = []
-        for p in people:
-            res.insert(p[1], p)
-        return res
-````
-
-
-## 数组中的逆序对
-> [Leetcode 剑指 Offer 51. 数组中的逆序对](https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/)
-
-> 在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。
->
-> 示例：
->
-> ```
-> 输入: [7,5,6,4]
-> 输出: 5
-> ```
-
-**解析**：使用归并排序。
-
-```python
-class Solution:
-    def reversePairs(self, nums: List[int]) -> int:
-        def merge(A, B):
-            temp = []
-            i, j = 0, 0
-            while i < len(A) and j < len(B):
-                if A[i] <= B[j]:
-                    temp.append(A[i])
-                    i += 1
-                else:
-                    temp.append(B[j])
-                    j += 1
-                    self.res += len(A) - i
-            temp.extend(A[i:])
-            temp.extend(B[j:])
-            return temp
-
-        def merge_sort(A):
-            if len(A) <= 1:
-                return A
-            mid = len(A) // 2
-            left = merge_sort(A[:mid])
-            right = merge_sort(A[mid:])
-            return merge(left, right)
-
-        self.res = 0
-        merge_sort(nums)
-        return self.res
-```
-
-
-## 翻转对
-> [Leetcode 493. 翻转对](https://leetcode-cn.com/problems/reverse-pairs/)
-
-> 给定一个数组`nums`，如果`i < j`且`nums[i] > 2 * nums[j]`我们就将`(i, j)`称作一个重要翻转对。
->
-> 你需要返回给定数组中的重要翻转对的数量。
->
-> 示例1：
->
-> ```
-> 输入: [1,3,2,3,1]
-> 输出: 2
-> ```
-
-**解析**：
-
-```python
-class Solution:
-    def reversePairs(self, nums: List[int]) -> int:
-        def merge(A, left, mid, right):
-            """A[left:mid+1], A[mid+1:right+1]"""
-            temp = []  # 用于存储数字
-            i, j = left, mid + 1
-            while i <= mid and j <= right:
-                if A[i] <= A[j]:
-                    temp.append(A[i])
-                    i += 1
-                else:
-                    temp.append(A[j])
-                    j += 1
-            temp.extend(A[i: mid + 1])
-            temp.extend(A[j: right + 1])
-            A[left: right + 1] = temp
-
-
-        def merge_sort(A, left, right):
-            if left >= right:
-                return 0
-            mid = (left + right) // 2
-            count = merge_sort(A, left, mid) + merge_sort(A, mid + 1, right)
-            j = mid + 1
-            for i in range(left, mid + 1):
-                while j <= right and A[i] > A[j] * 2:
-                    j += 1
-                count += j - mid - 1
-            merge(A, left, mid, right)
-            return count
-        
-        return merge_sort(nums, 0, len(nums) - 1)
-```
-
-
-## 计算右侧小于当前元素的个数
-> [Leetcode 315. 计算右侧小于当前元素的个数](https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/)
-
-> 给定一个整数数组 nums，按要求返回一个新数组counts。数组counts有该性质：`counts[i] `的值是`nums[i]`右侧小于`nums[i]`的元素的数量。
->
-> 示例：
->
-> ```
-> 输入：nums = [5,2,6,1]
-> 输出：[2,1,1,0] 
-> 解释：
-> 5 的右侧有 2 个更小的元素 (2 和 1)
-> 2 的右侧有 1 个更小的元素 (1)
-> 6 的右侧有 1 个更小的元素 (1)
-> 1 的右侧有 0 个更小的元素
-> ```
-
-**解析**：二分查找、归并排序、树状数组等。
-
-1、二分查找
-```python
-class Solution:
-    def countSmaller(self, nums: List[int]) -> List[int]:
-        import bisect
-        queue = []
-        res = []
-        for num in nums[::-1]:
-            loc = bisect.bisect_left(queue, num)
-            res.append(loc)
-            queue.insert(loc, num)
-        return res[::-1]
-```
-
-2、归并排序
-```python
-class Solution:
-    def countSmaller(self, nums: List[int]) -> List[int]:
-        def merge(left, right):
-            temp = []
-            i = j = 0
-            while i < len(left) or j < len(right):
-                if j == len(right) or i < len(left) and left[i][1] <= right[j][1]:
-                    temp.append(left[i])
-                    res[left[i][0]] += j
-                    i += 1
-                else:
-                    temp.append(right[j])
-                    j += 1
-            return temp
-        
-        def merge_sort(nums):
-            if len(nums) <= 1:
-                return nums
-            mid = len(nums) // 2
-            left = merge_sort(nums[:mid])
-            right = merge_sort(nums[mid:])
-            return merge(left, right)
-        
-        res = [0] * len(nums)
-        arr = [[i, num] for i, num in enumerate(nums)]
-        merge_sort(arr)
-        return res
-```
-
-3、树状数组
-
-==TODO==
-
-
-## 区间和的个数
-> [Leetcode 327. 区间和的个数](https://leetcode-cn.com/problems/count-of-range-sum/)
-
-> 给定一个整数数组`nums`，返回区间和在`[lower,upper]`之间的个数，包含`lower`和`upper`。
->
-> 区间和`S(i, j)`表示在`nums`中，位置从`i`到`j`的元素之和，包含`i`和`j`(`i≤j`)。
->
-> 说明: 最直观的算法复杂度是$O(n^2)$，请在此基础上优化你的算法。
->
-> 示例：
->
-> ```
-> 输入: nums = [-2,5,-1], lower = -2, upper = 2,
-> 输出: 3 
-> 解释: 3个区间分别是: [0,0], [2,2], [0,2]，它们表示的和分别为: -2, -1, 2。
-> ```
-
-**解析**：
-
-==TODO==
-
-
 
 # 数组
 
@@ -1246,6 +737,617 @@ class Solution:
 
 
 
+# 链表
+
+## 反转链表
+
+### 反转链表
+
+> [Leetcode 206. 反转链表](https://leetcode-cn.com/problems/reverse-linked-list/)
+
+> 反转一个单链表。
+
+**解析**：
+
+1、普通
+
+```python
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        
+        pre = None
+        cur = head
+        while cur:
+            nxt = cur.next
+            cur.next = pre
+            pre = cur
+            cur = nxt
+        
+        return pre
+```
+
+2、插入法
+
+```python
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+
+        dummy = ListNode(0)
+        dummy.next = head
+        cur = head
+        while cur and cur.next:
+            nxt = cur.next
+            cur.next = nxt.next
+            nxt.next = dummy.next
+            dummy.next = nxt
+
+        return dummy.next
+```
+
+3、递归
+
+```python
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        res = self.reverseList(head.next)
+        head.next.next = head
+        head.next = None
+        return res
+```
+
+
+### 反转链表 II
+
+> [Leetcode 92. 反转链表 II](https://leetcode-cn.com/problems/reverse-linked-list-ii/comments/)
+
+> 反转从位置 m 到 n 的链表。请使用一趟扫描完成反转。
+
+> 说明: 1 ≤ m ≤ n ≤ 链表长度。
+
+**解析**：找到第 m - 1 个结点，插入法。
+
+```python
+class Solution:
+    def reverseBetween(self, head: ListNode, m: int, n: int) -> ListNode:
+        if not head or m == n:
+            return head
+        
+        dummy = ListNode(0)
+        dummy.next = head
+        
+        pre = dummy
+        for _ in range(m - 1):
+            pre = pre.next
+        
+        cur = pre.next
+        for _ in range(n - m):
+            nxt = cur.next
+            cur.next = nxt.next
+            nxt.next = pre.next
+            pre.next = nxt
+        
+        return dummy.next
+```
+
+
+### 两两交换链表中的节点
+
+> [Leetcode 24. 两两交换链表中的节点](https://leetcode-cn.com/problems/swap-nodes-in-pairs/)
+
+> 给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
+
+> 你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+
+**解析**：
+
+```python
+class Solution:
+    def swapPairs(self, head: ListNode) -> ListNode:
+        dummy = ListNode(0)
+        dummy.next = head
+        
+        pre = dummy
+        cur = head
+        while cur and cur.next:
+            pre.next = cur.next
+            cur.next = cur.next.next
+            pre.next.next = cur
+            pre = cur
+            cur = cur.next
+                
+        return dummy.next
+```
+
+
+### K 个一组翻转链表
+
+> [Leetcode 25. K 个一组翻转链表](https://leetcode-cn.com/problems/reverse-nodes-in-k-group/)
+
+> 给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。
+
+> k 是一个正整数，它的值小于或等于链表的长度。
+
+> 如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+
+**解析**：插入法。
+
+```python
+class Solution:
+    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
+        dummy = ListNode(0)
+        dummy.next = head
+        
+        pre = dummy
+        cur = head
+        while cur:
+            end = cur
+            for i in range(k - 1):
+                end = end.next
+                if not end:
+                    return dummy.next
+            end = end.next
+            while cur and cur.next != end:
+                nxt = cur.next
+                cur.next = nxt.next
+                nxt.next = pre.next
+                pre.next = nxt
+            pre = cur
+            cur = end
+        
+        return dummy.next
+```
+
+
+## 链表回文
+
+> [Leetcode 234. 回文链表](https://leetcode-cn.com/problems/palindrome-linked-list/)
+
+> 请判断一个链表是否为回文链表。
+
+**解析**：快慢指针，并对前半部分进行翻转。
+
+```python
+class Solution:
+    def isPalindrome(self, head: ListNode) -> bool:
+        fast = slow = head
+        pre = None
+        while fast and fast.next:
+            fast = fast.next.next
+            nxt = slow.next
+            slow.next = pre
+            pre = slow
+            slow = nxt
+        
+        if fast:
+            left, right = pre, slow.next
+        else:    
+            left, right = pre, slow
+        while left and right and left.val == right.val:
+            left = left.next
+            right = right.next
+        
+        return not left and not right
+```
+
+
+## 旋转链表
+
+> [Leetcode 61. 旋转链表](https://leetcode-cn.com/problems/rotate-list/)
+
+> 给定一个链表，旋转链表，将链表每个节点向右移动 k 个位置，其中 k 是非负数。
+
+**解析**：遍历求链表总长度，将链表首尾相连。
+
+> 参考 [Leetcode-Gallianoo](https://leetcode-cn.com/u/gallianoo/)
+
+```python
+class Solution:
+    def rotateRight(self, head: ListNode, k: int) -> ListNode:
+        if not head or not head.next or k == 0:
+            return head
+        
+        count = 1
+        cur = head
+        while cur and cur.next:
+            count += 1
+            cur = cur.next
+        
+        k %= count
+        if k == 0:
+            return head
+        
+        cur.next = head  # 首尾相连
+        for i in range(count - k):
+            cur = cur.next
+
+        nxt = cur.next
+        cur.next = None
+        return nxt
+```
+
+
+## 合并两个有序链表
+
+> [Leetcode 21. 合并两个有序链表](https://leetcode-cn.com/problems/merge-two-sorted-lists/)
+
+> 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 
+
+**解析**：
+
+1、循环
+
+```python
+class Solution:
+    def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+        fake = ListNode(None)
+        p = fake
+
+        while l1 and l2:
+            if l1.val < l2.val:
+                p.next = l1
+                l1 = l1.next
+                p = p.next
+            else:
+                p.next = l2
+                l2 = l2.next
+                p = p.next
+        
+        p.next = l1 if l1 else l2
+        return fake.next
+```
+
+2、递归
+
+```python
+class Solution:
+    def mergeTwoLists(self, l1, l2):
+        if l1 is None:
+            return l2
+        elif l2 is None:
+            return l1
+        elif l1.val < l2.val:
+            l1.next = self.mergeTwoLists(l1.next, l2)
+            return l1
+        l2.next = self.mergeTwoLists(l1, l2.next)
+        return l2
+```
+
+
+## 链表排序
+
+### 对链表进行插入排序
+
+> [Leetcode 147. 对链表进行插入排序](https://leetcode-cn.com/problems/insertion-sort-list/)
+
+**解析**：使用 next 指针比较方便，不需要保存当前结点的前一个结点。
+
+```python
+class Solution:
+    def insertionSortList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        
+        dummy = ListNode(None)
+        dummy.next = head
+
+        cur = head
+        while cur and cur.next:
+            if cur.val <= cur.next.val:
+                cur = cur.next
+                continue
+            
+            pre = dummy
+            while pre.next.val <= cur.next.val:
+                pre = pre.next
+            # 插入法，把nxt插在pre后面
+            nxt = cur.next
+            cur.next = nxt.next
+            nxt.next = pre.next
+            pre.next = nxt
+
+        return dummy.next
+```
+
+### 排序链表 - O(nlgn)
+
+> [Leetcode 148. 排序链表](https://leetcode-cn.com/problems/sort-list/)
+
+> 在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。
+
+**解析**：
+
+1、使用归并排序。
+
+```python
+class Solution:
+    def sortList(self, head: ListNode) -> ListNode:
+        def merge_two_sorted_list(l1, l2):
+            dummy = ListNode(None)
+            cur = dummy
+            while l1 and l2:
+                if l1.val < l2.val:
+                    cur.next = l1
+                    l1 = l1.next
+                    cur = cur.next
+                else:
+                    cur.next = l2
+                    l2 = l2.next
+                    cur = cur.next
+            cur.next = l1 if l1 else l2
+            return dummy.next
+
+        def merge_sort(head):
+            if not head or not head.next:
+                return head
+            pre = None
+            fast = slow = head
+            while fast and fast.next:
+                pre = slow
+                slow = slow.next
+                fast = fast.next.next
+            pre.next = None
+
+            left = merge_sort(head)
+            right = merge_sort(slow)
+            return merge_two_sorted_list(left, right)
+        
+        return merge_sort(head)
+```
+
+2、使用快速排序。快速排序的第三种方法，选择头结点作为轴元素，因为选尾结点需要遍历一遍链表。
+
+> 参考 [Leetcode-a380922457](https://leetcode-cn.com/problems/sort-list/solution/gui-bing-pai-xu-he-kuai-su-pai-xu-by-a380922457/)
+
+Python实现。代码没什么问题，但是最后一个测试用例没通过，结果超时。
+
+```python
+class Solution:
+    def sortList(self, head: ListNode) -> ListNode:
+        def partition(head, tail):
+            pivot = head.val
+            store_node = head
+            cur = head.next
+            while cur != tail:
+                if cur.val <= pivot:
+                    store_node = store_node.next
+                    store_node.val, cur.val = cur.val, store_node.val
+                cur = cur.next
+            head.val, store_node.val = store_node.val, head.val
+            return store_node
+
+        def quick_sort(head, tail):
+            if head == tail or head.next == tail:
+                return
+            par_node = partition(head, tail)
+            quick_sort(head, par_node)
+            quick_sort(par_node.next, tail)
+            
+        quick_sort(head, None)
+        return head
+```
+
+Java实现，逻辑相同，通过！
+
+```java
+class Solution {
+    public ListNode sortList(ListNode head) {
+        quickSort(head, null);
+        return head;
+    }
+
+    public void quickSort(ListNode head, ListNode tail) {
+        if (head == tail || head.next == tail)
+            return;
+        ListNode par_node = partition(head, tail);
+        quickSort(head, par_node);
+        quickSort(par_node.next, tail);
+    }
+
+    public ListNode partition(ListNode head, ListNode tail) {
+        int pivot = head.val;
+        ListNode store_node = head;
+        ListNode cur = head.next;
+        while (cur != tail) {
+            if (cur.val <= pivot) {
+                store_node = store_node.next;
+                swap(store_node, cur);
+            }
+            cur = cur.next;
+        }
+        swap(head, store_node);
+        return store_node;
+    }
+    
+    public void swap(ListNode n1, ListNode n2) {
+        int temp = n1.val;
+        n1.val = n2.val;
+        n2.val = temp;
+    }
+}
+```
+
+### 合并K个有序链表
+
+> [Leetcode 23. 合并K个排序链表](https://leetcode-cn.com/problems/merge-k-sorted-lists/)
+
+> 合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。
+
+**解析**：
+
+> 参考 [LeetCode-Solution](https://leetcode-cn.com/problems/merge-k-sorted-lists/solution/he-bing-kge-pai-xu-lian-biao-by-leetcode-solutio-2/)
+
+1、一个一个合并。
+
+```python
+class Solution:
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        def merge_two_sorted_list(l1, l2):
+            # 与 排序链表 O(nlgn)-归并排序 相同
+            pass
+
+        ans = None
+        for l in lists:
+            ans = merge_two_sorted_list(ans, l)
+
+        return ans
+```
+
+分析：
+
+- 时间复杂度：假设每个链表的最长长度是 $n$。在第一次合并后，ans的长度为 $n$；第二次合并后，ans的长度为 $2\times n$。第 $i$ 次合并后，ans的长度为 $i \times n$。第 $i$ 次合并的时间代价是 $O(n + (i - 1) \times n) = O(i \times n)$，那么总的时间代价为 $O(\sum_{i = 1}^{k} (i \times n)) = O(\frac{(1 + k)\cdot k}{2} \times n)$，故渐进时间复杂度为 $O(k^2 n)$。
+- 空间复杂度：没有用到与 $k$ 和 $n$ 规模相关的辅助空间，故渐进空间复杂度为 $O(1)$。
+
+2、分治法，与归并排序的分治相同。
+
+```python
+class Solution:
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        def merge_two_sorted_list(l1, l2):
+            # 与 排序链表 O(nlgn)-归并排序 相同
+            pass
+
+        def helper(lists):
+            if len(lists) == 0:
+                return None
+            elif len(lists) == 1:
+                return lists[0]
+            
+            mid = len(lists) // 2
+            left = helper(lists[:mid])
+            right = helper(lists[mid:])
+            return merge_two_sorted_list(left, right)
+
+        return helper(lists)
+```
+
+分析：
+
+- 时间复杂度：考虑递归「向上回升」的过程——第一轮合并 $\frac{k}{2} $ 组链表，每一组的时间代价是 $O(2n)$；第二轮合并 $\frac{k}{4} $组链表，每一组的时间代价是 $O(4n)$......所以总的时间代价是 $O(\sum_{i = 1}^{\infty} \frac{k}{2^i} \times 2^i n)$，故渐进时间复杂度为 $O(kn \times \log k)$。
+- 空间复杂度：递归会使用到 $O(\log k)$ 空间代价的栈空间。
+
+
+## 两数相加
+
+> [Leetcode 2. 两数相加](https://leetcode-cn.com/problems/add-two-numbers/)
+
+> 给出两个 非空 的链表用来表示两个非负的整数。其中，它们各自的位数是按照 **逆序** 的方式存储的，并且它们的每个节点只能存储 一位 数字。
+>
+> 如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。
+>
+> 您可以假设除了数字 0 之外，这两个数都不会以 0 开头。
+
+**解析**：
+
+```python
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        dummy = ListNode(0)
+        cur = dummy
+        
+        p1, p2 = l1, l2
+        carry = 0
+        while p1 or p2 or carry != 0:
+            x = p1.val if p1 else 0
+            y = p2.val if p2 else 0
+            carry, remainder = divmod(x + y + carry, 10)
+            cur.next = ListNode(remainder)
+            cur = cur.next
+            if p1: p1 = p1.next
+            if p2: p2 = p2.next
+
+        return dummy.next
+```
+
+
+## 两数相加 II
+
+> [Leetcode 445. 两数相加 II](https://leetcode-cn.com/problems/add-two-numbers-ii/)
+
+> 给你两个 非空 链表来代表两个非负整数。数字最高位位于链表开始位置。它们的每个节点只存储一位数字。将这两数相加会返回一个新的链表。
+>
+> 你可以假设除了数字 0 之外，这两个数字都不会以零开头。
+>
+> 进阶：如果输入链表不能修改该如何处理？换句话说，你不能对列表中的节点进行翻转。
+
+**解析**：栈！
+
+```python
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        s1, s2 = [], []
+        while l1:
+            s1.append(l1.val)
+            l1 = l1.next
+        while l2:
+            s2.append(l2.val)
+            l2 = l2.next
+        ans = None
+        carry = 0
+        while s1 or s2 or carry != 0:
+            a = 0 if not s1 else s1.pop()
+            b = 0 if not s2 else s2.pop()
+            cur = a + b + carry
+            carry = cur // 10
+            cur %= 10
+            curnode = ListNode(cur)
+            curnode.next = ans
+            ans = curnode
+        return ans
+```
+
+
+## 重排链表
+
+> [Leetcode 143. 重排链表](https://leetcode-cn.com/problems/reorder-list/)
+
+> 给定一个单链表 L：L0→L1→…→Ln-1→Ln ，
+> 将其重新排列后变为： L0→Ln→L1→Ln-1→L2→Ln-2→…
+>
+> 你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+
+**解析**：
+
+```python
+class Solution:
+    def reorderList(self, head: ListNode) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        if not head or not head.next:
+            return
+        # 快慢指针，确定重点
+        slow, fast = head, head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        right = slow.next
+        slow.next = None
+        # 右半部分链表反转
+        pre, cur = None, right 
+        while cur:
+            temp = cur.next 
+            cur.next = pre
+            pre = cur
+            cur = temp
+        # 拼接两个链表
+        left, right = head, pre
+        while left and right:
+            temp2 = left.next
+            temp3 = right.next
+            left.next = right
+            right.next = temp2
+            left = temp2
+            right = temp3
+```
+
+
+
 # 栈
 ## 基本计算器
 > [Leetcode 224. 基本计算器](https://leetcode-cn.com/problems/basic-calculator/)
@@ -1652,590 +1754,6 @@ class MaxQueue:
 ```
 
 
-
-# 链表
-
-## 反转链表
-
-### 反转链表
-> [Leetcode 206. 反转链表](https://leetcode-cn.com/problems/reverse-linked-list/)
-
-> 反转一个单链表。
-
-**解析**：
-
-1、普通
-```python
-class Solution:
-    def reverseList(self, head: ListNode) -> ListNode:
-        if not head or not head.next:
-            return head
-        
-        pre = None
-        cur = head
-        while cur:
-            nxt = cur.next
-            cur.next = pre
-            pre = cur
-            cur = nxt
-        
-        return pre
-```
-
-2、插入法
-```python
-class Solution:
-    def reverseList(self, head: ListNode) -> ListNode:
-        if not head or not head.next:
-            return head
-
-        dummy = ListNode(0)
-        dummy.next = head
-        cur = head
-        while cur and cur.next:
-            nxt = cur.next
-            cur.next = nxt.next
-            nxt.next = dummy.next
-            dummy.next = nxt
-
-        return dummy.next
-```
-
-
-3、递归
-```python
-class Solution:
-    def reverseList(self, head: ListNode) -> ListNode:
-        if not head or not head.next:
-            return head
-        res = self.reverseList(head.next)
-        head.next.next = head
-        head.next = None
-        return res
-```
-
-
-### 反转链表 II
-> [Leetcode 92. 反转链表 II](https://leetcode-cn.com/problems/reverse-linked-list-ii/comments/)
-
-> 反转从位置 m 到 n 的链表。请使用一趟扫描完成反转。
-
-> 说明: 1 ≤ m ≤ n ≤ 链表长度。
-
-**解析**：找到第 m - 1 个结点，插入法。
-
-```python
-class Solution:
-    def reverseBetween(self, head: ListNode, m: int, n: int) -> ListNode:
-        if not head or m == n:
-            return head
-        
-        dummy = ListNode(0)
-        dummy.next = head
-        
-        pre = dummy
-        for _ in range(m - 1):
-            pre = pre.next
-        
-        cur = pre.next
-        for _ in range(n - m):
-            nxt = cur.next
-            cur.next = nxt.next
-            nxt.next = pre.next
-            pre.next = nxt
-        
-        return dummy.next
-```
-
-
-### 两两交换链表中的节点
-> [Leetcode 24. 两两交换链表中的节点](https://leetcode-cn.com/problems/swap-nodes-in-pairs/)
-
-> 给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
-
-> 你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
-
-**解析**：
-
-```python
-class Solution:
-    def swapPairs(self, head: ListNode) -> ListNode:
-        dummy = ListNode(0)
-        dummy.next = head
-        
-        pre = dummy
-        cur = head
-        while cur and cur.next:
-            pre.next = cur.next
-            cur.next = cur.next.next
-            pre.next.next = cur
-            pre = cur
-            cur = cur.next
-                
-        return dummy.next
-```
-
-
-### K 个一组翻转链表
-> [Leetcode 25. K 个一组翻转链表](https://leetcode-cn.com/problems/reverse-nodes-in-k-group/)
-
-> 给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。
-
-> k 是一个正整数，它的值小于或等于链表的长度。
-
-> 如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
-
-**解析**：插入法。
-
-```python
-class Solution:
-    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
-        dummy = ListNode(0)
-        dummy.next = head
-        
-        pre = dummy
-        cur = head
-        while cur:
-            end = cur
-            for i in range(k - 1):
-                end = end.next
-                if not end:
-                    return dummy.next
-            end = end.next
-            while cur and cur.next != end:
-                nxt = cur.next
-                cur.next = nxt.next
-                nxt.next = pre.next
-                pre.next = nxt
-            pre = cur
-            cur = end
-        
-        return dummy.next
-```
-
-
-## 链表回文
-> [Leetcode 234. 回文链表](https://leetcode-cn.com/problems/palindrome-linked-list/)
-
-> 请判断一个链表是否为回文链表。
-
-**解析**：快慢指针，并对前半部分进行翻转。
-
-```python
-class Solution:
-    def isPalindrome(self, head: ListNode) -> bool:
-        fast = slow = head
-        pre = None
-        while fast and fast.next:
-            fast = fast.next.next
-            nxt = slow.next
-            slow.next = pre
-            pre = slow
-            slow = nxt
-        
-        if fast:
-            left, right = pre, slow.next
-        else:    
-            left, right = pre, slow
-        while left and right and left.val == right.val:
-            left = left.next
-            right = right.next
-        
-        return not left and not right
-```
-
-
-## 旋转链表
-> [Leetcode 61. 旋转链表](https://leetcode-cn.com/problems/rotate-list/)
-
-> 给定一个链表，旋转链表，将链表每个节点向右移动 k 个位置，其中 k 是非负数。
-
-**解析**：遍历求链表总长度，将链表首尾相连。
-
-> 参考 [Leetcode-Gallianoo](https://leetcode-cn.com/u/gallianoo/)
-
-```python
-class Solution:
-    def rotateRight(self, head: ListNode, k: int) -> ListNode:
-        if not head or not head.next or k == 0:
-            return head
-        
-        count = 1
-        cur = head
-        while cur and cur.next:
-            count += 1
-            cur = cur.next
-        
-        k %= count
-        if k == 0:
-            return head
-        
-        cur.next = head  # 首尾相连
-        for i in range(count - k):
-            cur = cur.next
-
-        nxt = cur.next
-        cur.next = None
-        return nxt
-```
-
-
-## 合并两个有序链表
-> [Leetcode 21. 合并两个有序链表](https://leetcode-cn.com/problems/merge-two-sorted-lists/)
-
-> 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 
-
-**解析**：
-
-1、循环
-```python
-class Solution:
-    def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
-        fake = ListNode(None)
-        p = fake
-
-        while l1 and l2:
-            if l1.val < l2.val:
-                p.next = l1
-                l1 = l1.next
-                p = p.next
-            else:
-                p.next = l2
-                l2 = l2.next
-                p = p.next
-        
-        p.next = l1 if l1 else l2
-        return fake.next
-```
-
-2、递归
-```python
-class Solution:
-    def mergeTwoLists(self, l1, l2):
-        if l1 is None:
-            return l2
-        elif l2 is None:
-            return l1
-        elif l1.val < l2.val:
-            l1.next = self.mergeTwoLists(l1.next, l2)
-            return l1
-        l2.next = self.mergeTwoLists(l1, l2.next)
-        return l2
-```
-
-
-## 链表排序
-### 对链表进行插入排序
-> [Leetcode 147. 对链表进行插入排序](https://leetcode-cn.com/problems/insertion-sort-list/)
-
-**解析**：使用 next 指针比较方便，不需要保存当前结点的前一个结点。
-
-```python
-class Solution:
-    def insertionSortList(self, head: ListNode) -> ListNode:
-        if not head or not head.next:
-            return head
-        
-        dummy = ListNode(None)
-        dummy.next = head
-
-        cur = head
-        while cur and cur.next:
-            if cur.val <= cur.next.val:
-                cur = cur.next
-                continue
-            
-            pre = dummy
-            while pre.next.val <= cur.next.val:
-                pre = pre.next
-            # 插入法，把nxt插在pre后面
-            nxt = cur.next
-            cur.next = nxt.next
-            nxt.next = pre.next
-            pre.next = nxt
-
-        return dummy.next
-```
-
-### 排序链表 - O(nlgn)
-> [Leetcode 148. 排序链表](https://leetcode-cn.com/problems/sort-list/)
-
-> 在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。
-
-**解析**：
-
-1、使用归并排序。
-```python
-class Solution:
-    def sortList(self, head: ListNode) -> ListNode:
-        def merge_two_sorted_list(l1, l2):
-            dummy = ListNode(None)
-            cur = dummy
-            while l1 and l2:
-                if l1.val < l2.val:
-                    cur.next = l1
-                    l1 = l1.next
-                    cur = cur.next
-                else:
-                    cur.next = l2
-                    l2 = l2.next
-                    cur = cur.next
-            cur.next = l1 if l1 else l2
-            return dummy.next
-
-        def merge_sort(head):
-            if not head or not head.next:
-                return head
-            pre = None
-            fast = slow = head
-            while fast and fast.next:
-                pre = slow
-                slow = slow.next
-                fast = fast.next.next
-            pre.next = None
-
-            left = merge_sort(head)
-            right = merge_sort(slow)
-            return merge_two_sorted_list(left, right)
-        
-        return merge_sort(head)
-```
-
-2、使用快速排序。快速排序的第三种方法，选择头结点作为轴元素，因为选尾结点需要遍历一遍链表。
-
-> 参考 [Leetcode-a380922457](https://leetcode-cn.com/problems/sort-list/solution/gui-bing-pai-xu-he-kuai-su-pai-xu-by-a380922457/)
-
-Python实现。代码没什么问题，但是最后一个测试用例没通过，结果超时。
-```python
-class Solution:
-    def sortList(self, head: ListNode) -> ListNode:
-        def partition(head, tail):
-            pivot = head.val
-            store_node = head
-            cur = head.next
-            while cur != tail:
-                if cur.val <= pivot:
-                    store_node = store_node.next
-                    store_node.val, cur.val = cur.val, store_node.val
-                cur = cur.next
-            head.val, store_node.val = store_node.val, head.val
-            return store_node
-
-        def quick_sort(head, tail):
-            if head == tail or head.next == tail:
-                return
-            par_node = partition(head, tail)
-            quick_sort(head, par_node)
-            quick_sort(par_node.next, tail)
-            
-        quick_sort(head, None)
-        return head
-```
-
-Java实现，逻辑相同，通过！
-```java
-class Solution {
-    public ListNode sortList(ListNode head) {
-        quickSort(head, null);
-        return head;
-    }
-
-    public void quickSort(ListNode head, ListNode tail) {
-        if (head == tail || head.next == tail)
-            return;
-        ListNode par_node = partition(head, tail);
-        quickSort(head, par_node);
-        quickSort(par_node.next, tail);
-    }
-
-    public ListNode partition(ListNode head, ListNode tail) {
-        int pivot = head.val;
-        ListNode store_node = head;
-        ListNode cur = head.next;
-        while (cur != tail) {
-            if (cur.val <= pivot) {
-                store_node = store_node.next;
-                swap(store_node, cur);
-            }
-            cur = cur.next;
-        }
-        swap(head, store_node);
-        return store_node;
-    }
-    
-    public void swap(ListNode n1, ListNode n2) {
-        int temp = n1.val;
-        n1.val = n2.val;
-        n2.val = temp;
-    }
-}
-```
-
-### 合并K个有序链表
-> [Leetcode 23. 合并K个排序链表](https://leetcode-cn.com/problems/merge-k-sorted-lists/)
-
-> 合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。
-
-**解析**：
-
-> 参考 [LeetCode-Solution](https://leetcode-cn.com/problems/merge-k-sorted-lists/solution/he-bing-kge-pai-xu-lian-biao-by-leetcode-solutio-2/)
-
-1、一个一个合并。
-```python
-class Solution:
-    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
-        def merge_two_sorted_list(l1, l2):
-            # 与 排序链表 O(nlgn)-归并排序 相同
-            pass
-
-        ans = None
-        for l in lists:
-            ans = merge_two_sorted_list(ans, l)
-
-        return ans
-```
-
-分析：
-- 时间复杂度：假设每个链表的最长长度是 $n$。在第一次合并后，ans的长度为 $n$；第二次合并后，ans的长度为 $2\times n$。第 $i$ 次合并后，ans的长度为 $i \times n$。第 $i$ 次合并的时间代价是 $O(n + (i - 1) \times n) = O(i \times n)$，那么总的时间代价为 $O(\sum_{i = 1}^{k} (i \times n)) = O(\frac{(1 + k)\cdot k}{2} \times n)$，故渐进时间复杂度为 $O(k^2 n)$。
-- 空间复杂度：没有用到与 $k$ 和 $n$ 规模相关的辅助空间，故渐进空间复杂度为 $O(1)$。
-
-2、分治法，与归并排序的分治相同。
-```python
-class Solution:
-    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
-        def merge_two_sorted_list(l1, l2):
-            # 与 排序链表 O(nlgn)-归并排序 相同
-            pass
-
-        def helper(lists):
-            if len(lists) == 0:
-                return None
-            elif len(lists) == 1:
-                return lists[0]
-            
-            mid = len(lists) // 2
-            left = helper(lists[:mid])
-            right = helper(lists[mid:])
-            return merge_two_sorted_list(left, right)
-
-        return helper(lists)
-```
-
-分析：
-- 时间复杂度：考虑递归「向上回升」的过程——第一轮合并 $\frac{k}{2} $ 组链表，每一组的时间代价是 $O(2n)$；第二轮合并 $\frac{k}{4} $组链表，每一组的时间代价是 $O(4n)$......所以总的时间代价是 $O(\sum_{i = 1}^{\infty} \frac{k}{2^i} \times 2^i n)$，故渐进时间复杂度为 $O(kn \times \log k)$。
-- 空间复杂度：递归会使用到 $O(\log k)$ 空间代价的栈空间。
-
-
-## 两数相加
-> [Leetcode 2. 两数相加](https://leetcode-cn.com/problems/add-two-numbers/)
-
-> 给出两个 非空 的链表用来表示两个非负的整数。其中，它们各自的位数是按照 **逆序** 的方式存储的，并且它们的每个节点只能存储 一位 数字。
->
-> 如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。
->
-> 您可以假设除了数字 0 之外，这两个数都不会以 0 开头。
-
-**解析**：
-
-```python
-class Solution:
-    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
-        dummy = ListNode(0)
-        cur = dummy
-        
-        p1, p2 = l1, l2
-        carry = 0
-        while p1 or p2 or carry != 0:
-            x = p1.val if p1 else 0
-            y = p2.val if p2 else 0
-            carry, remainder = divmod(x + y + carry, 10)
-            cur.next = ListNode(remainder)
-            cur = cur.next
-            if p1: p1 = p1.next
-            if p2: p2 = p2.next
-
-        return dummy.next
-```
-
-
-## 两数相加 II
-> [Leetcode 445. 两数相加 II](https://leetcode-cn.com/problems/add-two-numbers-ii/)
-
-> 给你两个 非空 链表来代表两个非负整数。数字最高位位于链表开始位置。它们的每个节点只存储一位数字。将这两数相加会返回一个新的链表。
->
-> 你可以假设除了数字 0 之外，这两个数字都不会以零开头。
->
-> 进阶：如果输入链表不能修改该如何处理？换句话说，你不能对列表中的节点进行翻转。
-
-**解析**：栈！
-
-```python
-class Solution:
-    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
-        s1, s2 = [], []
-        while l1:
-            s1.append(l1.val)
-            l1 = l1.next
-        while l2:
-            s2.append(l2.val)
-            l2 = l2.next
-        ans = None
-        carry = 0
-        while s1 or s2 or carry != 0:
-            a = 0 if not s1 else s1.pop()
-            b = 0 if not s2 else s2.pop()
-            cur = a + b + carry
-            carry = cur // 10
-            cur %= 10
-            curnode = ListNode(cur)
-            curnode.next = ans
-            ans = curnode
-        return ans
-```
-
-
-## 重排链表
-> [Leetcode 143. 重排链表](https://leetcode-cn.com/problems/reorder-list/)
-
-> 给定一个单链表 L：L0→L1→…→Ln-1→Ln ，
-> 将其重新排列后变为： L0→Ln→L1→Ln-1→L2→Ln-2→…
->
-> 你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
-
-**解析**：
-
-```python
-class Solution:
-    def reorderList(self, head: ListNode) -> None:
-        """
-        Do not return anything, modify head in-place instead.
-        """
-        if not head or not head.next:
-            return
-        # 快慢指针，确定重点
-        slow, fast = head, head
-        while fast and fast.next:
-            slow = slow.next
-            fast = fast.next.next
-        right = slow.next
-        slow.next = None
-        # 右半部分链表反转
-        pre, cur = None, right 
-        while cur:
-            temp = cur.next 
-            cur.next = pre
-            pre = cur
-            cur = temp
-        # 拼接两个链表
-        left, right = head, pre
-        while left and right:
-            temp2 = left.next
-            temp3 = right.next
-            left.next = right
-            right.next = temp2
-            left = temp2
-            right = temp3
-```
 
 
 
@@ -5401,6 +4919,535 @@ if __name__ == "__main__":
 > 返回能够访问所有节点的最短路径的长度。你可以在任一节点开始和停止，也可以多次重访节点，并且可以重用边。
 
 **解析**：==TODO==
+
+
+
+# 排序
+
+## 经典排序算法
+
+> [Leetcode 912. 排序数组](https://leetcode-cn.com/problems/sort-an-array/)
+
+> 给你一个整数数组 nums，请你将该数组升序排列。
+
+代码格式非Leetcode！
+
+一、冒泡排序
+
+```python
+def bubble_sort(A):
+    for i in range(len(A)):
+        for j in range(0, len(A) - i - 1):
+            if A[j] > A[j + 1]:
+                A[j], A[j + 1] = A[j + 1], A[j]
+```
+
+二、插入排序
+
+```python
+def insert_sort(A):
+    for i in range(1, len(A)):
+        temp = A[i]
+        j = i - 1
+        while j >= 0 and A[j] > temp:
+            A[j + 1] = A[j]
+            j -= 1
+        A[j + 1] = temp  # 不满条件的下一个位置
+```
+
+三、选择排序
+
+```python
+def select_sort(A):
+    for i in range(0, len(A)):
+        k = i
+        # Find the smallest num and record its index
+        for j in range(i, len(A)):
+            if A[j] < A[k]:
+                k = j
+        if k != i:
+            A[i], A[k] = A[k], A[i]
+```
+
+四、归并排序
+
+1、返回数组法。便于记忆。
+
+```python
+def merge(A, B):
+    # return sorted(A + B)
+    temp = []
+    i, j = 0, 0
+    while i < len(A) and j < len(B):
+        if A[i] <= B[j]:
+            temp.append(A[i])
+            i += 1
+        else:
+            temp.append(B[j])
+            j += 1
+    temp.extend(A[i:])
+    temp.extend(B[j:])
+    return temp
+
+
+def merge_sort(A):
+    if len(A) <= 1:
+        return A
+    mid = len(A) // 2
+    left = merge_sort(A[:mid])
+    right = merge_sort(A[mid:])
+    return merge(left, right)
+    
+# res = merge_sort(A, 0, len(A) - 1)
+```
+
+2、原地操作法。函数参数稍微复杂。
+
+```python
+def merge(A, left, mid, right):
+    """A[left:mid+1], A[mid+1:right+1]"""
+    temp = []  # 用于存储数字
+    i, j = left, mid + 1
+    while i <= mid and j <= right:
+        if A[i] <= A[j]:
+            temp.append(A[i])
+            i += 1
+        else:
+            temp.append(A[j])
+            j += 1
+    temp.extend(A[i: mid + 1])
+    temp.extend(A[j: right + 1])
+    A[left: right + 1] = temp
+
+
+def merge_sort(A, left, right):
+    if left < right:
+        mid = (left + right) // 2
+        merge_sort(A, left, mid)
+        merge_sort(A, mid + 1, right)
+        merge(A, left, mid, right)
+        
+# merge_sort(A, 0, len(A) - 1)
+```
+
+五、快速排序
+
+介绍三种写法的快速排序。三种写法的`quick_sort`函数相同，在此给出。
+
+推荐使用**填坑法**，比较直观，便于记忆。
+
+```python
+def quick_sort(A, left, right):
+    if left < right:
+        p = partition(A, left, right)
+        quick_sort(A, left, p - 1)
+        quick_sort(A, p + 1, right)
+        
+# quick_sort(A, 0, len(A) - 1)
+```
+
+1、填坑法。第一个元素当作轴元素。注意先从右往左比较，大于等于号；再从左往右比较，小于号。
+
+```python
+def partition(A, left, right):
+    pivot = A[left]
+    while left < right:
+        while left < right and A[right] >= pivot:
+            right -= 1
+        A[left] = A[right]  # 看作填坑
+        while left < right and A[left] < pivot:
+            left += 1
+        A[right] = A[left]  # 看作填坑
+    A[left] = pivot
+    return left
+```
+
+2、交换法。第一个元素当作轴元素。注意先从右往左比较，大于等于号；再从左往右比较，小于等于号。
+
+```python
+def partition(A, left, right):
+    pivot_idx = left
+    pivot = A[left]
+    while left < right:
+        while left < right and A[right] >= pivot:
+            right -= 1
+        while left < right and A[left] <= pivot:
+            left += 1
+        if left < right:  # 进行交换
+            A[left], A[right] = A[right], A[left]
+    A[pivot_idx], A[left] = A[left], A[pivot_idx]
+    return left
+```
+
+3、顺序遍历法。算法导论中的写法，选择最后一个元素作为轴元素。
+
+```python
+def partition(A, left, right):
+    pivot = A[right]  # 选择最后一个元素作为轴元素
+    store_idx = left - 1
+    for cur in range(left, right):  # 顺序遍历
+        if A[cur] <= pivot:
+            store_idx += 1
+            A[store_idx], A[cur] = A[cur], A[store_idx]
+    A[store_idx + 1], A[right] = A[right], A[store_idx + 1]
+    return store_idx + 1
+```
+
+选择第一个元素作为轴元素，而且该写法可以推广到链表排序。
+
+```python
+def partition(A, left, right):
+    pivot = A[left]  # 选择第一个元素作为轴元素
+    store_idx = left
+    for cur in range(left + 1, right + 1):  # 顺序遍历
+        if A[cur] <= pivot:
+            store_idx += 1
+            A[store_idx], A[cur] = A[cur], A[store_idx]
+    A[left], A[store_idx] = A[store_idx], A[left]
+    return store_idx
+```
+
+七、堆排序
+
+> [Python实现 《算法导论 第三版》中的算法 第6章 堆排序](https://blog.csdn.net/shengchaohua163/article/details/83038413)
+
+```python
+def get_parent(i):
+    return (i - 1) // 2
+
+
+def get_left(i):
+    return 2 * i + 1
+
+
+def get_right(i):
+    return 2 * i + 2
+
+
+def max_heapify_recursive(A, heap_size, i):
+    l = get_left(i)
+    r = get_right(i)
+    largest_ind = i
+    if l < heap_size and A[l] > A[largest_ind]:
+        largest_ind = l
+    if r < heap_size and A[r] > A[largest_ind]:
+        largest_ind = r
+    if largest_ind == i:
+        return
+    else:
+        A[i], A[largest_ind] = A[largest_ind], A[i]
+        max_heapify_recursive(A, heap_size, largest_ind)
+    
+    
+def max_heapify_loop(A, heap_size, i): 
+    while i < heap_size:
+        l = get_left(i)
+        r = get_right(i)
+        largest_ind = i
+        if l < heap_size and A[l] > A[largest_ind]:
+            largest_ind = l
+        if r < heap_size and A[r] > A[largest_ind]:
+            largest_ind = r
+        if largest_ind == i:
+            break
+        else:
+            A[i], A[largest_ind] = A[largest_ind], A[i]
+            i = largest_ind
+
+
+def build_max_heap(A, heap_size):
+    begin = len(A)//2 - 1  # len(A)//2 - 1是堆中第一个叶子节点的前一个节点
+    for i in range(begin, -1, -1):
+        max_heapify_loop(A, heap_size, i)
+
+
+def heap_sort(A):
+    heap_size = len(A)
+    build_max_heap(A, heap_size)
+    for i in range(len(A)-1, 0, -1):
+        A[0], A[i] = A[i], A[0]  # 每次固定最后一个元素，并将堆大小减一
+        heap_size -= 1
+        max_heapify_loop(A, heap_size, 0)
+```
+
+八、线性时间排序
+
+> [Python实现 《算法导论 第三版》中的算法 第8章 线性时间排序](https://blog.csdn.net/shengchaohua163/article/details/83444059)
+
+比较排序的时间复杂度下界是$O(n\lg n)$。归并排序、堆排序和快速排序能在$O(n\lg n)$时间内排序`n`个数。归并排序和堆排序在最坏情况下能够达到该时间，快速排序在平均情况达到该时间（快速排序最坏情况下是$O(n^2)$）。
+
+该文介绍了三种线性时间复杂度的排序算法：计数排序、基数排序和桶排序。
+
+
+
+## 把数组排成最小的数
+
+> [Leetcode 剑指 Offer 45. 把数组排成最小的数](https://leetcode-cn.com/problems/ba-shu-zu-pai-cheng-zui-xiao-de-shu-lcof/)
+
+> 输入一个非负整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
+
+解析：字典顺序。
+
+```python
+class Solution:
+    def minNumber(self, nums: List[int]) -> str:
+        str_nums = [str(num) for num in nums]  
+        for i in range(len(nums)):
+            for j in range(len(nums) - i - 1):
+                if str_nums[j] + str_nums[j + 1] > str_nums[j + 1] + str_nums[i]:
+                    str_nums[j], str_nums[j + 1] = str_nums[j + 1], str_nums[j]
+        
+        return "".join(str_nums)
+```
+
+## 合并区间
+
+> [Leetcode 56. 合并区间](https://leetcode-cn.com/problems/merge-intervals/)
+
+> 给出一个区间的集合，请合并所有重叠的区间。
+
+**解析**：排序即可。
+
+```python
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        intervals.sort(key=lambda ele: ele[0])
+        res = []
+        for inter in intervals:
+            if res and res[-1][1] >= inter[0]:
+                last = res.pop()
+                res.append([last[0], max(last[1], inter[1])])
+            else:
+                res.append(inter)
+        return res
+```
+
+## 根据身高重建队列
+
+> [Leetcode 406. 根据身高重建队列](https://leetcode-cn.com/problems/queue-reconstruction-by-height/)
+
+> 假设有打乱顺序的一群人站成一个队列。 每个人由一个整数对(h, k)表示，其中h是这个人的身高，k是排在这个人前面且身高大于或等于h的人数。 编写一个算法来重建这个队列。
+>
+> 注意：总人数少于1100人。
+>
+> 示例：
+>
+> ```
+> 输入:
+> [[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]
+> 
+> 输出:
+> [[5,0], [7,0], [5,2], [6,1], [4,4], [7,1]]
+> ```
+
+**解析**：按身高降序、人数升序排序。
+
+> 参考 [Leetcode 官方题解](https://leetcode-cn.com/problems/queue-reconstruction-by-height/solution/gen-ju-shen-gao-zhong-jian-dui-lie-by-leetcode/)
+
+```python
+class Solution:
+    def reconstructQueue(self, people: List[List[int]]) -> List[List[int]]:
+        people.sort(key = lambda x: (-x[0], x[1]))
+        res = []
+        for p in people:
+            res.insert(p[1], p)
+        return res
+````
+
+
+## 数组中的逆序对
+
+> [Leetcode 剑指 Offer 51. 数组中的逆序对](https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/)
+
+> 在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。
+>
+> 示例：
+>
+> ```
+> 输入: [7,5,6,4]
+> 输出: 5
+> ```
+
+**解析**：使用归并排序。
+
+```python
+class Solution:
+    def reversePairs(self, nums: List[int]) -> int:
+        def merge(A, B):
+            temp = []
+            i, j = 0, 0
+            while i < len(A) and j < len(B):
+                if A[i] <= B[j]:
+                    temp.append(A[i])
+                    i += 1
+                else:
+                    temp.append(B[j])
+                    j += 1
+                    self.res += len(A) - i
+            temp.extend(A[i:])
+            temp.extend(B[j:])
+            return temp
+
+        def merge_sort(A):
+            if len(A) <= 1:
+                return A
+            mid = len(A) // 2
+            left = merge_sort(A[:mid])
+            right = merge_sort(A[mid:])
+            return merge(left, right)
+
+        self.res = 0
+        merge_sort(nums)
+        return self.res
+```
+
+
+## 翻转对
+
+> [Leetcode 493. 翻转对](https://leetcode-cn.com/problems/reverse-pairs/)
+
+> 给定一个数组`nums`，如果`i < j`且`nums[i] > 2 * nums[j]`我们就将`(i, j)`称作一个重要翻转对。
+>
+> 你需要返回给定数组中的重要翻转对的数量。
+>
+> 示例1：
+>
+> ```
+> 输入: [1,3,2,3,1]
+> 输出: 2
+> ```
+
+**解析**：
+
+```python
+class Solution:
+    def reversePairs(self, nums: List[int]) -> int:
+        def merge(A, left, mid, right):
+            """A[left:mid+1], A[mid+1:right+1]"""
+            temp = []  # 用于存储数字
+            i, j = left, mid + 1
+            while i <= mid and j <= right:
+                if A[i] <= A[j]:
+                    temp.append(A[i])
+                    i += 1
+                else:
+                    temp.append(A[j])
+                    j += 1
+            temp.extend(A[i: mid + 1])
+            temp.extend(A[j: right + 1])
+            A[left: right + 1] = temp
+
+
+        def merge_sort(A, left, right):
+            if left >= right:
+                return 0
+            mid = (left + right) // 2
+            count = merge_sort(A, left, mid) + merge_sort(A, mid + 1, right)
+            j = mid + 1
+            for i in range(left, mid + 1):
+                while j <= right and A[i] > A[j] * 2:
+                    j += 1
+                count += j - mid - 1
+            merge(A, left, mid, right)
+            return count
+        
+        return merge_sort(nums, 0, len(nums) - 1)
+```
+
+
+## 计算右侧小于当前元素的个数
+
+> [Leetcode 315. 计算右侧小于当前元素的个数](https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/)
+
+> 给定一个整数数组 nums，按要求返回一个新数组counts。数组counts有该性质：`counts[i] `的值是`nums[i]`右侧小于`nums[i]`的元素的数量。
+>
+> 示例：
+>
+> ```
+> 输入：nums = [5,2,6,1]
+> 输出：[2,1,1,0] 
+> 解释：
+> 5 的右侧有 2 个更小的元素 (2 和 1)
+> 2 的右侧有 1 个更小的元素 (1)
+> 6 的右侧有 1 个更小的元素 (1)
+> 1 的右侧有 0 个更小的元素
+> ```
+
+**解析**：二分查找、归并排序、树状数组等。
+
+1、二分查找
+
+```python
+class Solution:
+    def countSmaller(self, nums: List[int]) -> List[int]:
+        import bisect
+        queue = []
+        res = []
+        for num in nums[::-1]:
+            loc = bisect.bisect_left(queue, num)
+            res.append(loc)
+            queue.insert(loc, num)
+        return res[::-1]
+```
+
+2、归并排序
+
+```python
+class Solution:
+    def countSmaller(self, nums: List[int]) -> List[int]:
+        def merge(left, right):
+            temp = []
+            i = j = 0
+            while i < len(left) or j < len(right):
+                if j == len(right) or i < len(left) and left[i][1] <= right[j][1]:
+                    temp.append(left[i])
+                    res[left[i][0]] += j
+                    i += 1
+                else:
+                    temp.append(right[j])
+                    j += 1
+            return temp
+        
+        def merge_sort(nums):
+            if len(nums) <= 1:
+                return nums
+            mid = len(nums) // 2
+            left = merge_sort(nums[:mid])
+            right = merge_sort(nums[mid:])
+            return merge(left, right)
+        
+        res = [0] * len(nums)
+        arr = [[i, num] for i, num in enumerate(nums)]
+        merge_sort(arr)
+        return res
+```
+
+3、树状数组
+
+==TODO==
+
+
+## 区间和的个数
+
+> [Leetcode 327. 区间和的个数](https://leetcode-cn.com/problems/count-of-range-sum/)
+
+> 给定一个整数数组`nums`，返回区间和在`[lower,upper]`之间的个数，包含`lower`和`upper`。
+>
+> 区间和`S(i, j)`表示在`nums`中，位置从`i`到`j`的元素之和，包含`i`和`j`(`i≤j`)。
+>
+> 说明: 最直观的算法复杂度是$O(n^2)$，请在此基础上优化你的算法。
+>
+> 示例：
+>
+> ```
+> 输入: nums = [-2,5,-1], lower = -2, upper = 2,
+> 输出: 3 
+> 解释: 3个区间分别是: [0,0], [2,2], [0,2]，它们表示的和分别为: -2, -1, 2。
+> ```
+
+**解析**：
+
+==TODO==
 
 
 
