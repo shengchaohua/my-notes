@@ -4625,7 +4625,7 @@ class MinHeap:
         pos = self.item_pos[item]
         self._siftup(pos)
 
-    def exist(self, item):
+    def contains(self, item):
         return self.item_pos[item] < self.size
 
 
@@ -4648,7 +4648,7 @@ def mst_prim(graph, weights, start):
         if edge in weights:
             minimum_cost += weights[edge]
         for adj_node in graph[node]:
-            if priority_queue.exist(adj_node) and weights[(node, adj_node)] < keys[adj_node]:
+            if priority_queue.contains(adj_node) and weights[(node, adj_node)] < keys[adj_node]:
                 predecessors[adj_node] = node
                 keys[adj_node] = weights[(node, adj_node)]
                 priority_queue.decrease_key(adj_node)
