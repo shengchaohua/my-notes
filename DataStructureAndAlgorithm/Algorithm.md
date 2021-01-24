@@ -1642,6 +1642,32 @@ class Solution:
 
 # 队列
 
+## 用两个栈实现队列
+
+>  [剑指 Offer 09. 用两个栈实现队列](https://leetcode-cn.com/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof/)
+
+> 用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 `appendTail` 和 `deleteHead` ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，deleteHead 操作返回 -1 )
+
+**解析**：两个栈，一个用于入队，一个用于出队。
+
+```python
+class CQueue:
+    def __init__(self):
+        self.stack1 = []
+        self.stack2 = []
+
+    def appendTail(self, value: int) -> None:
+        self.stack1.append(value)
+
+    def deleteHead(self) -> int:
+        if len(self.stack2) == 0:
+            while self.stack1:
+                self.stack2.append(self.stack1.pop())
+        if len(self.stack2) == 0:
+            return -1
+        return self.stack2.pop()
+```
+
 ## 滑动窗口最大值
 
 > [Leetcode 239. 滑动窗口最大值](https://leetcode-cn.com/problems/sliding-window-maximum/)
@@ -1651,6 +1677,7 @@ class Solution:
 > 返回滑动窗口中的最大值。
 
 **解析**：
+
 1. 双端队列作为滑动窗口；
 2. 队列中存放的是数组下标，最左边的位置存放的是当前窗口中最大元素的下标；
 3. 如果当前队列大小等于指定大小（`i - queue[0] >= k`），则无法再添加元素，必须从左边弹出（`queue.popleft()`）；
