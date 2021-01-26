@@ -1390,32 +1390,36 @@ class Solution:
 > - top() —— 获取栈顶元素。
 > - getMin() —— 检索栈中的最小元素。
 
-**解析**：增加一个辅助栈。
+**解析**：增加一个辅助栈，用来保存当前栈内的
 
 ```python
 class MinStack:
+
     def __init__(self):
         self.stack = []
-        self.min_eles = []
+        self.aux_stack = []
 
     def push(self, x: int) -> None:
         self.stack.append(x)
-        if len(self.min_eles) == 0 or x <= self.min_eles[-1]:
-            self.min_eles.append(x)
+        if len(self.aux_stack) == 0:
+            self.aux_stack.append(x)
+        else:
+            cur_min = self.aux_stack[-1]
+            self.aux_stack.append(min(cur_min, x))
 
     def pop(self) -> None:
         if self.stack:
-            data = self.stack.pop()
-            if self.min_eles[-1] == data:
-                self.min_eles.pop()
+            self.stack.pop()
+            self.aux_stack.pop()
 
     def top(self) -> int:
         if self.stack:
             return self.stack[-1]
+        return 0
 
-    def getMin(self) -> int:
-        if self.min_eles:
-            return self.min_eles[-1]
+    def min(self) -> int:
+        if self.aux_stack:
+            return self.aux_stack[-1]
 ```
 
 
@@ -1451,8 +1455,9 @@ class Solution:
 > [Leetcode 20. 有效的括号](https://leetcode-cn.com/problems/valid-parentheses/)
 
 > 给定一个只包括'('，')'，'{'，'}'，'['，']'的字符串，判断字符串是否有效。
-
+>
 > 有效字符串需满足：
+>
 > 1. 左括号必须用相同类型的右括号闭合。
 > 2. 左括号必须以正确的顺序闭合。
 
@@ -1482,7 +1487,7 @@ class Solution:
 > [Leetcode 856. 括号的分数](https://leetcode-cn.com/problems/score-of-parentheses/)
 
 > 给定一个平衡括号字符串 S，按下述规则计算该字符串的分数：
-
+>
 > - () 得 1 分。
 > - AB 得 A + B 分，其中 A 和 B 是平衡括号字符串。
 > - (A) 得 2 * A 分，其中 A 是平衡括号字符串。
@@ -2477,6 +2482,7 @@ class Solution:
 ```
 
 3、非递归版本
+
 ```python
 class Solution:
     def preorderTraversal(self, root: TreeNode) -> List[int]:
@@ -7503,7 +7509,7 @@ class Solution:
 ```
 
 对数组进行排序，使用剪枝加速：
-```
+```python
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
         def dfs(nums, size, begin, target, path, res):
