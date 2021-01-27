@@ -1390,7 +1390,7 @@ class Solution:
 > - top() —— 获取栈顶元素。
 > - getMin() —— 检索栈中的最小元素。
 
-**解析**：增加一个辅助栈，用来保存当前栈内的
+**解析**：增加一个辅助栈，用来保存当前栈内的最小元素。
 
 ```python
 class MinStack:
@@ -1651,7 +1651,7 @@ class Solution:
 
 >  [剑指 Offer 09. 用两个栈实现队列](https://leetcode-cn.com/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof/)
 
-> 用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 `appendTail` 和 `deleteHead` ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，deleteHead 操作返回 -1 )
+> 用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 `appendTail` 和 `deleteHead` ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，`deleteHead` 操作返回 -1 )
 
 **解析**：两个栈，一个用于入队，一个用于出队。
 
