@@ -10,35 +10,146 @@
 
 ## 数组
 
-数组看可以说是最简单的一种数据结构，它占据一块连续的内存并按照顺序存储数据。
+数组可以说是最简单的一种数据结构，它占据一块连续的内存并按照顺序存储数据。
 
 在创建数组时，必须指定数组的容量大小，然后根据大小分配内存。即使只在数组中存储一个数字，也需要分配指定容量大小的内存。因此数组的空间效率不是很好，可能会有空闲的区域没有得到利用。
 
 由于数组中的内存是连续的，于是可以根据下标在$O(1)$的时间读写任何元素，访问时间效率高。
 
-C、C++、Java等语言都有专门的数组类型，而Python中没有数组，通常使用列表`list`来代替。
+为了解决数组空间效率不高的问题，许多语言都提供了动态数组，比如C++的STL中的`vector`，Java中的`ArrayList`，Python中的`list`等。
 
-为了解决数组空间效率不高的问题，人们设计实现了多种动态数组，比如C++的STL中的`vector`，Java中的`ArrayList`，Python中的`list`等。
+
 
 ## 链表
 
 链表是一种动态数据结构，由指针把若干个结点连接成链状结构。
 
-在创建链表时，无须直到链表的长度。当插入一个结点时，只需要为新结点分配内存，并调整指针的指向来确保新结点被链接到链表当中。链表的内存不是在创建链表时一次性分配，而是每添加一个结点分配一次内存。由于链表没有闲置的内存，链表的空间效率比数组高。
+在创建链表时，无须知道链表的长度。当插入一个结点时，只需要为新结点分配内存，并调整指针的指向来确保新结点被链接到链表当中。链表的内存不是在创建链表时一次性分配的，而是每添加一个结点分配一次内存。所以链表没有闲置的内存，空间效率比数组高。
 
-由于链表的内存不是一次性分配的，所以自然无法保证链表的内存和数组一样时连续的。如果想访问链表的第i个结点，我们只能从头结点开始遍历链表，因此链表的访问时间效率低。
+另外，由于链表的内存不是一次性分配的，所以自然无法保证链表的内存和数组一样是连续的。如果想访问链表的第`i`个结点，我们只能从头结点开始遍历链表，因此链表的访问时间效率低。
 
-常见的链表有单链表，双链表。如果一个双链表首尾相连，可以称为循环双链表。
+常见的链表有单链表，双链表。单链表中的结点有指向下一个结点的指针，而双链表既有指向上一个结点的指针，也有指向下一个结点的指针。如果一个链表的头尾结点相连，形成了一个环路，这种链表可以称为循环链表。头尾结点相连的情况通常出现在双链表中，头结点中指向前一个结点的指针指向尾结点，尾结点中指向下一个结点的指针指向头结点，此时该链表可以称为循环双链表。
 
 如果需要自己实现链表，通常会在头结点之前添加一个虚拟头结点，这样可以简化链表的插入、删除等操作。
+
+
 
 ## 栈
 
 栈是一种动态集合。栈的特点是后进先出：最先进入的元素最后被删除，最后进入的元素被最先删除。
 
+### 最小栈
+
+> [Leetcode 155. 最小栈](https://leetcode-cn.com/problems/min-stack/)
+
+> 设计一个支持 push ，pop ，top 操作，并能在常数时间内检索到最小元素的栈。
+>
+> - push(x) —— 将元素 x 推入栈中。
+> - pop() —— 删除栈顶的元素。
+> - top() —— 获取栈顶元素。
+> - getMin() —— 检索栈中的最小元素。
+
+**解析**：增加一个辅助栈，用来保存当前栈内的最小元素。
+
+```python
+class MinStack:
+
+    def __init__(self):
+        self.stack = []
+        self.aux_stack = []
+
+    def push(self, x: int) -> None:
+        self.stack.append(x)
+        if len(self.aux_stack) == 0:
+            self.aux_stack.append(x)
+        else:
+            cur_min = self.aux_stack[-1]
+            self.aux_stack.append(min(cur_min, x))
+
+    def pop(self) -> None:
+        if self.stack:
+            self.stack.pop()
+            self.aux_stack.pop()
+
+    def top(self) -> int:
+        if self.stack:
+            return self.stack[-1]
+        return 0
+
+    def min(self) -> int:
+        if self.aux_stack:
+            return self.aux_stack[-1]
+```
+
+### 用队列实现栈
+
+>  [225. 用队列实现栈](https://leetcode-cn.com/problems/implement-stack-using-queues/)
+
+> 使用队列实现栈的下列操作：
+>
+> - push(x) -- 元素 x 入栈
+> - pop() -- 移除栈顶元素
+> - top() -- 获取栈顶元素
+> - empty() -- 返回栈是否为空
+
+**解析**：增加一个辅助队列，用来转换元素的顺序。
+
+```python
+class MyStack:
+
+    def __init__(self):
+        self.queue = []
+        self.aux_queue = []  # 辅助队列
+
+    def push(self, x: int) -> None:
+        self.aux_queue.append(x)
+        while self.queue:
+            self.aux_queue.append(self.queue.pop(0))
+        self.queue, self.aux_queue = self.aux_queue, self.queue
+
+    def pop(self) -> int:
+        return self.queue.pop(0)
+
+    def top(self) -> int:
+        return self.queue[0]
+
+    def empty(self) -> bool:
+        return len(self.queue) == 0
+```
+
+
+
 ## 队列
 
 队列是一种动态集合。队列的特点时先进先出：最先进入的元素最先被删除，最后进入的元素被最后删除。
+
+### 用两个栈实现队列
+
+>  [剑指 Offer 09. 用两个栈实现队列](https://leetcode-cn.com/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof/)
+
+> 用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 `appendTail` 和 `deleteHead` ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，`deleteHead` 操作返回 -1 )
+
+**解析**：两个栈，一个用于入队，一个用于出队。
+
+```python
+class CQueue:
+    def __init__(self):
+        self.in_stack = []
+        self.out_stack = []
+
+    def appendTail(self, value: int) -> None:
+        self.in_stack.append(value)
+
+    def deleteHead(self) -> int:
+        if len(self.out_stack) == 0:
+            while self.in_stack:
+                self.out_stack.append(self.in_stack.pop())
+        if len(self.out_stack) == 0:
+            return -1
+        return self.out_stack.pop()
+```
+
+
 
 # 散列表
 
