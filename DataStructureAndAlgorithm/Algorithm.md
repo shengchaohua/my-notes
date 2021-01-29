@@ -1301,7 +1301,6 @@ class Solution:
         return ans
 ```
 
-
 ## 重排链表
 
 > [Leetcode 143. 重排链表](https://leetcode-cn.com/problems/reorder-list/)
@@ -2039,21 +2038,25 @@ class Solution:
     def nextGreaterElement(self, n: int) -> int:
         chars = list(str(n))
         length = len(chars)
-        left = length - 2
-        while left >= 0 and chars[left] >= chars[left + 1]:
-            left -= 1
-        if left < 0:
+        right = length - 2
+        while right >= 0 and chars[right] >= chars[right + 1]:
+            right -= 1
+        if right < 0:
             return -1
         # 在left右边，找到最后一个大于chars[left]的数字
-        right = left + 1
+        left = right
+        right = right + 1
         while right < length and chars[right] > chars[left]:
             right += 1
         chars[left], chars[right - 1] = chars[right - 1], chars[left]
-        # 右边的数组进行翻转
-        count = length - left
-        for i in range(1, count // 2 + 1):
-            chars[left + i], chars[length - i] = chars[length - i], chars[left + i]
-        
+        # left右边的数组进行翻转
+        begin = left + 1
+        end = length - 1
+        while begin < end:
+            chars[begin], chars[end] = chars[end], chars[begin]
+            begin += 1
+            end -= 1
+        # 计算
         res = 0
         for ch in chars:
             res = res * 10 + int(ch)
@@ -2061,8 +2064,8 @@ class Solution:
         return res if res < 2 ** 31 - 1 else -1
 ```
 
-
 ## 上一个更小元素
+
 > 给定一个32位正整数 n，你需要找到最大的32位整数，其与 n 中存在的位数完全相同，并且其值小于n。如果不存在这样的32位整数，则返回-1。
 
 **注意**：Leetcode没有这一题。
@@ -2074,20 +2077,24 @@ class Solution:
     def lastSmallerElement(self, n: int) -> int:
         chars = list(str(n))
         length = len(chars)
-        left = length - 2
-        while left >= 0 and chars[left] <= chars[left + 1]:
-            left -= 1
-        if left < 0:
+        right = length - 2
+        while right >= 0 and chars[right] <= chars[right + 1]:
+            right -= 1
+        if right < 0:
             return -1
         # 在left右边，找到最后一个小于chars[left]的数字
-        right = left + 1
+        left = right
+        right = right + 1
         while right < length and chars[right] < chars[left]:
             right += 1
         chars[left], chars[right - 1] = chars[right - 1], chars[left]
         # 右边的数组进行翻转
-        count = length - left
-        for i in range(1, count // 2 + 1):
-            chars[left + i], chars[length - i] = chars[length - i], chars[left + i]
+        begin = left + 1
+        end = length - 1
+        while begin < end:
+            chars[begin], chars[end] = chars[end], chars[begin]
+            begin += 1
+            end -= 1
         if chars[0] == "0":
             return -1
         res = 0
@@ -2096,13 +2103,12 @@ class Solution:
         return res
 ```
 
-
-
 ## 基本计算器 II
+
 > [Leetcode 227. 基本计算器 II](https://leetcode-cn.com/problems/basic-calculator-ii/)
 
 > 实现一个基本的计算器来计算一个简单的字符串表达式的值。
-
+>
 > 字符串表达式仅包含非负整数，+， - ，*，/ 四种运算符和空格  。 整数除法仅保留整数部分。
 
 **解析**：
