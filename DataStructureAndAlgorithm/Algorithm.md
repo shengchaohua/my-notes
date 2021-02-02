@@ -1794,13 +1794,13 @@ class MaxQueue:
 > [Leetcode 28. 实现 strStr()](https://leetcode-cn.com/problems/implement-strstr/)
 
 > 实现 strStr() 函数。
-
+>
 > 给定一个 haystack 字符串和一个 needle 字符串，在 haystack 字符串中找出 needle 字符串出现的第一个位置 (从0开始)。如果不存在，则返回 -1。
 
 **解析**：
 
 1、暴力搜索
-```
+```python
 class Solution:
     def strStr(self, haystack: str, needle: str) -> int:
         if not needle:
@@ -1816,7 +1816,6 @@ class Solution:
                 return i
         
         return -1
-
 ```
 
 2、KMP
@@ -1945,19 +1944,17 @@ class Solution:
 
 ## 去除重复字母/不同字符的最小子序列
 > [Leetcode 316. 去除重复字母](https://leetcode-cn.com/problems/remove-duplicate-letters/)
+>
+> [Leetcode 1081. 不同字符的最小子序列](https://leetcode-cn.com/problems/smallest-subsequence-of-distinct-characters/)
 
 > 给你一个仅包含小写字母的字符串，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证返回结果的字典序最小（要求不能打乱其他字符的相对位置）。
 
-> [Leetcode 1081. 不同字符的最小子序列](https://leetcode-cn.com/problems/smallest-subsequence-of-distinct-characters/)
-
-> 返回字符串`text`中按字典序排列最小的子序列，该子序列包含`text`中所有不同字符一次。
-
 > 示例 1:
-```
-输入: "bcabc"
-输出: "abc"
-```
-
+>
+> ```
+> 输入: "bcabc"
+> 输出: "abc"
+> ```
 **解析**：使用栈和哈希表。
 
 > 参考 [Leetcode官方题解](https://leetcode-cn.com/problems/remove-duplicate-letters/solution/qu-chu-zhong-fu-zi-mu-by-leetcode/)
@@ -1982,7 +1979,7 @@ class Solution:
 > [Leetcode 13. 罗马数字转整数](https://leetcode-cn.com/problems/roman-to-integer/)
 
 > 罗马数字包含以下七种字符:`I`，`V`，`X`，`L`，`C`，`D`和`M`。
-
+>
 > 给定一个罗马数字，将其转换成整数。输入确保在 1 到 3999 的范围内。
 
 **解析**：
@@ -2160,18 +2157,19 @@ class Solution:
 >
 > 进阶：你能否仅使用O(1) 空间解决问题？
 >
+
 > 示例：
 >
 > ```
-> 输入：
+>输入：
 > ["a","a","b","b","c","c","c"]
-> 
+>
 > 输出：
-> 返回 6 ，输入数组的前 6 个字符应该是：["a","2","b","2","c","3"]
+>返回 6 ，输入数组的前 6 个字符应该是：["a","2","b","2","c","3"]
 > 
-> 说明：
+>说明：
 > "aa" 被 "a2" 替代。"bb" 被 "b2" 替代。"ccc" 被 "c3" 替代。
-> ```
+>```
 
 **解析**：
 
@@ -2229,7 +2227,7 @@ class Solution:
 >
 > 重复出现的子串要计算它们出现的次数。
 
-> **解析**：
+**解析**：
 
 1、中心扩展法
 
@@ -2347,8 +2345,28 @@ class Solution:
         return "".join(str(x) for x in ansArr[index:])
 ```
 
+## 替换后的最长重复字符
+
+> [Leetcode 424. 替换后的最长重复字符](https://leetcode-cn.com/problems/longest-repeating-character-replacement/)
+
+> 给你一个仅由大写英文字母组成的字符串，你可以将任意位置上的字符替换成另外的字符，总共可最多替换 *k* 次。在执行上述操作后，找到包含重复字母的最长子串的长度。
+
+> **示例 1：**
+>
+> ```
+> 输入：s = "ABAB", k = 2
+> 输出：4
+> 解释：用两个'A'替换为两个'B',反之亦然。
+> ```
+
+**解析**：
+
+> 参考官方题解
+
+==TODO==
 
 ## 汉字读法的整数转为阿拉伯数字
+
 > 示例：
 
 ```
@@ -2360,7 +2378,7 @@ class Solution:
 
 **解析**：不保证完全正确。
 
-```
+```python
 def chinese2int(string):
     """string表示的数字小于一亿"""
     digits_map = {"零": 0, "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, 
