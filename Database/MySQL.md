@@ -32,9 +32,16 @@ MySQL的默认端口号是3306。
 
 ## 常用SQL
 
+SQL语句主要可以划分为以下3个类别：
+
+- DDL(Data Definition Language)语句：数据定义语言，主要用来定义数据库、表、列、索引等数据库对象。常用的语句关键字主要包括create、drop、alater等。
+- DML(Data Manipulation Language)语句：数据操纵语句，用于添加、删除、更新和查询数据库记录。常用的语句关键字主要包括insert、delete、update和select等。
+- DCL(Data Control Language)语句：数据控制语句，用于定义数据库、表、字段、用户的访问权限和安全级别。主要的语句关键字包括grant、revoke等。
+
 创建数据库：
+
 ```mysql
-CREATE DATABASE 数据库名;
+CREATE DATABASE database_na;
 ```
 
 创建数据表：
