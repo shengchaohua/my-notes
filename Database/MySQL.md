@@ -41,7 +41,7 @@ SQL语句主要可以划分为以下3个类别：
 创建数据库：
 
 ```mysql
-CREATE DATABASE database_na;
+CREATE DATABASE database_name;
 ```
 
 创建数据表：
@@ -96,10 +96,36 @@ DELETE FROM table_name [WHERE Clause]
 ```
 
 
-## 常用函数
-数字函数：
 
-字符串函数：
+## 数据类型
+
+> 深入浅出MySQL 数据库开发、优化与管理维护
+
+### 数值类型
+
+### 日期时间类型
+
+### 字符串类型
+
+
+
+## 运算符
+
+
+
+
+
+## 常用函数
+
+函数可以用在SELECT语句及其子句（例如WHERE、ORDER BY等）中，也可以用在UPDATE、DELETE语句机器子句中。
+
+### 字符串函数
+
+![mysql字符串函数](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210318202023.png)
+
+![mysql字符串函数2](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210318202114.png)
+
+数字函数：
 
 日期函数：
 
