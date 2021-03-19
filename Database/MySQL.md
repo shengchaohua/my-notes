@@ -117,19 +117,41 @@ DELETE FROM table_name [WHERE Clause]
 
 ## 常用函数
 
+>  深入浅出MySQL 数据库开发、优化与管理维护
+
 函数可以用在SELECT语句及其子句（例如WHERE、ORDER BY等）中，也可以用在UPDATE、DELETE语句机器子句中。
 
 ### 字符串函数
 
-![mysql字符串函数](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210318202023.png)
+字符串函数包括CONCAT、INSERT、LOWER、UPPER、LEFT、RIGHT、LPAD、RPAD等。
 
-![mysql字符串函数2](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210318202114.png)
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210318202023.png" alt="mysql字符串函数" style="zoom:80%;" />
 
-数字函数：
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210318202114.png" alt="mysql字符串函数2" style="zoom:80%;" />
 
-日期函数：
+### 数值函数
 
-聚合函数：
+数值函数包括ABS、CEIL、FLOOR、MOD、RAND、ROUND、TRUNCATE等。
+
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210319090406.png" alt="mysql数值函数" style="zoom:80%;" />
+
+### 日期和时间函数
+
+日期和时间函数包括CURDATA、CURTIME、NOW、UNIX_TIMESTAMP、FROM_UNIXTIME、YEAR等。
+
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210319091152.png" alt="mysql日期和时间函数" style="zoom:80%;" />
+
+### 流程函数
+
+流程函数也是很常用的一类函数，可以用来实现条件选择等功能。流程函数包括IF、IFNULL等。
+
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210319091559.png" alt="mysql流程函数" style="zoom:80%;" />
+
+### 其他函数
+
+MySQL还有很多其他函数，比如DATABASE、VERSION、USER、INET_ATON、INET_NTOA、PASSWORD等。
+
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210319091919.png" alt="mysql其他常用函数" style="zoom:80%;" />
 
 
 
