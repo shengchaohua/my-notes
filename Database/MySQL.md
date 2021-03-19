@@ -19,14 +19,18 @@
 
 
 
-# MySQL基础
+# 基础
 > [MySQL/数据库 知识点总结](https://gitee.com/SnailClimb/JavaGuide/blob/master/docs/database/MySQL.md)
 
 > [一千行 MySQL 学习笔记](https://shockerli.net/post/1000-line-mysql-note/)
 
 > [drop，truncate，delete 三者的区别](https://blog.csdn.net/GRAY_KEY/article/details/86742248)
 
-MySQL 是一种关系型数据库，在Java企业级开发中非常常用，因为MySQL是开源免费的，并且方便扩展。阿里巴巴数据库系统也大量用到了MySQL，因此它的稳定性是有保障的。MySQL是开放源代码的，因此任何人都可以在许可下下载并根据个性化的需要对其进行修改。
+SQL是Structured Query Language（结构化查询语言）的缩写，是使用关系型数据库的应用语言。美国国家标准局（ANSI）于1986年制定了第一个SQL标准，叫做SQL-86。大多数关系型数据库系统都支持SQL语言。
+
+MySQL是一种关系型数据库，并对标准SQL进行了一些扩展。MySQL数据库在企业级开发中非常常用。
+
+MySQL是开放源代码的，因此任何人都可以在许可下下载并根据需要对其进行修改或扩展。
 
 MySQL的默认端口号是3306。
 
@@ -86,7 +90,7 @@ INSERT INTO table_name (field1, field2,...fieldN) VALUES (value1, value2,...valu
 
 更新：
 ```mysql
-UPDATE table_name SET field1=new-value1, field2=new-value2
+UPDATE table_name SET field1=value1, field2=value2
 [WHERE Clause]
 ```
 
@@ -95,25 +99,57 @@ UPDATE table_name SET field1=new-value1, field2=new-value2
 DELETE FROM table_name [WHERE Clause]
 ```
 
-
-
 ## 数据类型
 
 > 深入浅出MySQL 数据库开发、优化与管理维护
 
 ### 数值类型
 
+MySQL支持所有标准SQL中的数值类型，包括严格数值类型（整数）和近似数值数据类型（浮点数），并以此为基础做了扩展。
+
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210319095021.png" alt="mysql数值类型" style="zoom:80%;" />
+
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210319095034.png" alt="mysql数值类型2" style="zoom:80%;" />
+
 ### 日期时间类型
+
+MySQL中有多种数据类型可以用于日期和时间的表示。下表列出了MySQL5.0中所支持的日期和时间类型
+
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210319105017.png" alt="mysql日期和时间类型" style="zoom:80%;" />
+
+这些数据类型的主要区别如下：
+
+- 如果要用来表示年月日，通常用DATE来表示。
+- 如果要用来表示年月日时分秒，通常用DATETIME来表示。
+- 如果要用来表示时分秒，通常用TIME来表示。
+- 如果需要经常插入或更新日期为当前系统时间，通常使用TIMESTAMP来表示。
+- 如果只是表示年份，可以用YEAR来表示。
+
+从上表可以看出，每种日期时间类型都有一个有效值范围。如果超出这个范围，系统会进行错误提示，并将以零值来进行存储。不同日期类型零值的表示如下表所示。
+
+![mysql日期和时间类型的零值表示](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210319140635.png)
+
+TIMESTAMP和DATETIME的表示方法非常类似，主要区别如下：
+
+- TIMESTAMP存储大小为4字节，支持的时间范围较小，而DATETIME占8字节，支持的范围更大。
+- 表中的第一个TIMESTAMP列自动设置为系统时间。如果在写数据时指定为NULL或没有明确赋值，则MySQL会自动设置该列为系统当前的日期和时间。
+- TIMESTAMP的插入和查询都受当地时区的影响，更能反映出实际的日期，而DATETIME则只能反映插入时当地的时区。
 
 ### 字符串类型
 
+MySQL提供了多种对字符数据的存储类型，比如CHAR、VARCHAR、BINARY、TEXT等。
 
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210319143039.png" alt="mysql字符串类型" style="zoom:80%;" />
 
 ## 运算符
 
+MySQL支持多种类型的运算符。
 
+- 算术运算符：+、-、*、/（DIV）、%（MOD）。
 
-
+- 比较运算符：=、<>或!=、<=>（NULL安全的等于）、<、<=、>、>=、BETWEEN、IN、IS NULL、IS NOT NULL、LIKE、REGEXP。
+- 逻辑运算发：NOT或!（逻辑非）、AND或&&（逻辑与）、OR或||（逻辑或）、XOR（逻辑异或）。
+- 位运算符：&、|、^、~、>>、<<。
 
 ## 常用函数
 
@@ -152,8 +188,6 @@ DELETE FROM table_name [WHERE Clause]
 MySQL还有很多其他函数，比如DATABASE、VERSION、USER、INET_ATON、INET_NTOA、PASSWORD等。
 
 <img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20210319091919.png" alt="mysql其他常用函数" style="zoom:80%;" />
-
-
 
 
 ## 视图
@@ -277,139 +311,6 @@ drop trigger [schema_name.] trigger_name;
 
 
 
-# 日志
-在 MySQL 中，有 4 种不同的日志，分别是错误日志、二进制日志（BINLOG 日志）、查询日志和慢查询日志，这些日志记录着数据库在不同方面的踪迹。
-
-## 错误日志
-错误日志是 MySQL 中最重要的日志之一，它记录了当 MySQL 启动和停止时，以及服务器在运行过程中发生任何严重错误时的相关信息。当数据库出现任何故障导致无法正常使用时，可以首先查看此日志。
-
-该日志是默认开启的，默认存放目录为 MySQL 的数据目录（var/lib/mysql）, 默认的日志文件名为hostname.err（hostname是主机名）。
-
-查看日志位置指令：
-```mysql
-show variables like 'log_error%';
-```
-
-查看日志内容：
-```shell
-tail -f /var/lib/mysql/xaxh-server.err
-```
-
-
-## 二进制日志
-二进制日志（binary log，binlog）记录了所有的 DDL（数据定义语言）语句和 DML（数据操纵语言）语句，但是不包括数据查询语句。此日志对于灾难时的数据恢复起着极其重要的作用，MySQL的主从复制， 就是通过binlog实现的。
-
-默认情况下，二进制日志是没有开启的，需要在MySQL的配置文件中开启，并配置MySQL日志的文件名和格式。如果不指定日志的保存路径，则默认保存在MySQL的数据目录。
-```ini
-# 设置开启binlog日志，日志的文件前缀为mysqlbin，生成的文件名如mysqlbin.000001,mysqlbin.000002
-log_bin=mysqlbin
-# 配置二进制日志的格式
-binlog_format=STATEMENT/ROW/MIXED
-```
-
-二进制日志有三种格式：
-- STATEMENT：该日志格式在日志文件中记录的是SQL语句（STATEMENT），每一条对数据进行修改的SQL都会记录在日志文件中。通过MySQL提供的mysqlbinlog工具，可以查看到每条语句的文本。主从复制的时候，从库（slave）会将日志解析为原文本，并在从库重新执行一次。
-- ROW：该日志格式在日志文件中记录的是每一行的数据变更，而不是记录SQL语句。比如，执行SQL语句：`update
-tb_book set status='1'`, 如果是STATEMENT格式，在日志中会记录一行SQL文件； 如果是ROW，由于是对全表进行更新，也就是每一行记录都会发生变更，日志中会记录每一行的数据变更。
-- MIXED：这是目前MySQL默认的日志格式，混合了STATEMENT 和 ROW两种格式。默认情况下采用STATEMENT，但是在一些特殊情况下采用ROW来进行记录。MIXED 格式能尽量利用两种模式的优点，而避开他们的缺点。
-
-由于日志以二进制方式存储，不能直接读取，需要使用mysqlbinlog工具来查看，语法如下：
-```mysql
-# 查看STATEMENT格式日志
-mysqlbinlog log-file;
-# 查看ROW格式日志
-mysqlbinlog -vv log-file;
-```
-
-对于比较繁忙的系统，由于每天生成日志量大，这些日志如果长时间不清除，将会占用大量的磁盘空间。删除日志有几种常用方法：
-```mysql
-# 删除全部 binlog 日志，删除之后，日志编号将从 xxxx.000001 重新开始。
-Reset Master;
-# 删除 ****** 编号之前的所有日志
-purge master logs to 'mysqlbin.******'
-# 删除 某一时间 之前产生的所有日志
-purge master logs before 'yyyy-mm-dd hh24:mi:ss'
-```
-
-还有一种删除日志的方法，但是不需要手动删除日志：#在MySQL配置文件中设置日志过期参数，过了指定天数后的日志将会被自动删除。
-```ini
---expire_logs_days=xxx
-```
-
-
-## 查询日志
-查询日志中记录了客户端的所有操作语句，而二进制日志不包含查询数据的SQL语句。
-
-查询日志默认是未开启的。如果需要开启查询日志，可以配置：
-```ini
-# 设置是否开启查询日志，0表示关闭，1表示开启
-general_log=1
-# 设置日志的文件名，如果没有指定，默认的文件名为 host_name.log
-general_log_file=file_name
-```
-
-
-## 慢查询日志
-慢查询日志记录了执行时间超过参数`long_query_time`设置值并且扫描记录数不小于`min_examined_row_limit`的SQL语句。`long_query_time`默认为 10 秒，最小为 0， 精度可以到微秒。
-
-慢查询日志默认是关闭的。如果需要开启慢查询日志，可以配置：
-```ini
-# 设置是否开启慢查询日志， 0代表关闭，1代表开启
-slow_query_log=1
-# 设置慢查询日志的文件名
-slow_query_log_file=slow_query.log
-# 设置查询的时间限制，超过这个时间将认为是慢查询，需要进行日志记录，默认为10秒
-long_query_time=10
-```
-
-和错误日志、查询日志一样，慢查询日志记录的格式也是纯文本，可以被直接读取。
-
-如何查询`long_query_time`：
-```mysql
-show variables like 'long%';
-```
-
-如何查看慢查询日志：
-```shell
-# Linux
-cat slow_query.log
-```
-
-如果慢查询日志内容很多，直接查看文件比较麻烦，这个时候可以借助于MySQL自带的`mysqldumpslow`工具， 来对慢查询日志进行分类汇总。
-
-
-
-# 体系结构
-> [一条SQL语句在MySQL中如何执行的](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247485097&idx=1&sn=84c89da477b1338bdf3e9fcd65514ac1&chksm=cea24962f9d5c074d8d3ff1ab04ee8f0d6486e3d015cfd783503685986485c11738ccb542ba7&token=79317275&lang=zh_CN#rd)
-
-MySQL体系结构如下图所示：
-
-![MySQL体系结构](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030153533.png?token=AE4F4YPUQCBD6XAVVHQCJSC7TPBN6)
-
-整个MySQL Server由以下组成
-- Connection Pool：连接池组件
-- Management Services & Utilities：管理服务和工具组件
-- SQL Interface：SQL接口组件
-- Parser：查询分析器组件
-- Optimizer：优化器组件
-- Caches & Buffers：缓冲池组件
-- Pluggable Storage Engines：存储引擎
-- File System：文件系统
-
-MySQL包括：
-- 连接层：最上层是一些客户端和链接服务，包含本地socket通信和大多数基于客户端/服务端工具实现的类似于TCP/IP的通信。主要完成一些类似于连接处理、授权认证、及相关的安全方案。在该层上引入了线程池的概念，为通过认证安全接入的客户端提供线程。同样在该层上可以实现基于SSL的安全链接。服务器也会为安全接入的每个客户端验证它所具有的操作权限。
-- 服务层：第二层架构主要完成大多数的核心服务功能，如SQL接口，并完成缓存的查询，SQL的分析和优化，部分内置函数的执行。所有跨存储引擎的功能也在这一层实现，如过程、函数等。在该层，服务器会解析查询并创建相应的内部解析树，并对其完成相应的优化如确定表的查询的顺序，是否利用索引等，最后生成相应的执行操作。如果是select语句，服务器还会查询内部的缓存，如果缓存空间足够大，这样在解决大量读操作的环境中能够很好的提升系统的性能。
-- 引擎层：存储引擎层，存储引擎真正的负责了MySQL中数据的存储和提取，服务器通过API和存储引擎进行通信。不同的存储引擎具有不同的功能，这样我们可以根据自己的需要，来选取合适的存储引擎。
-- 存储层：数据存储层， 主要是将数据存储在文件系统之上，并完成与存储引擎的交互。
-
-和其他数据库相比，MySQL有点与众不同，它的架构可以在多种不同场景中应用并发挥良好作用。主要体现在存储引擎上，插件式的存储引擎架构，将查询处理和其他的系统任务以及数据的存储提取分离。这种架构可以根据业务的需求和实际需要选择合适的存储引擎。
-
-
-## 一条SQL语句的执行过程
-==TODO==
-
-
-
 
 # 索引
 > [MySQL索引——分类、何时使用、何时不使用、何时失效](https://blog.csdn.net/weixin_39420024/article/details/80040549)
@@ -418,7 +319,7 @@ MySQL包括：
 
 索引（index）是帮助MySQL高效获取数据的数据结构（有序）。在数据之外，数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查找算法，这种数据结构就是索引。通常的索引结果如下图所示：
 
-![MySQL索引示例](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030153654.png?token=AE4F4YNWSDL53EYEXXIQSHC7TPBS6)
+<img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030153654.png?token=AE4F4YNWSDL53EYEXXIQSHC7TPBS6" alt="MySQL索引示例"  />
 
 一般来说索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储在磁盘上。索引是数据库中用来提高性能的最常用的工具。
 
@@ -443,8 +344,6 @@ MySQL包括：
 - 增删改操作占多数的表或者字段不应该建立索引
 - where条件里用不到的字段不应该创建索引
 - 过滤性不好的不适合建索引
-
-
 
 ## 索引结构
 索引是在MySQL的存储引擎层中实现的，而不是在服务器层实现的。所以每种存储引擎的索引都不一定完全相同，也不是所有的存储引擎都支持所有的索引类型的。MySQL目前提供了以下4种索引：
@@ -574,7 +473,9 @@ InnoDB的非主键索引（辅助索引）是非聚簇索引。非主键索引�
 - 考虑在字符串类型的字段上使用前缀索引代替普通索引，前缀索引仅限于字符串类型，较普通索引会占用更小的空间。
 
 
+
 # 存储引擎
+
 和大多数的数据库不同，MySQL中有一个存储引擎的概念，针对不同的存储需求可以选择最优的存储引擎。
 
 存储引擎就是存储数据，建立索引，更新查询数据等等技术的实现方式。存储引擎是基于表的，而不是基于库的，所以存储引擎也可被称为表类型。
@@ -696,7 +597,9 @@ MyISAM是MySQL5.5版本之前的默认数据库引擎。MyISAM性能比较好，
 - 是否支持MVCC：仅InnoDB支持。应对高并发事务，MVCC比单纯的加锁更高效。
 
 
+
 # 锁
+
 锁是计算机协调多个进程或线程并发访问某一资源的机制（避免争抢）。
 
 在数据库中，除传统的计算资源（如CPU、RAM、I/O等）的争用以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有效性是所有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。从这个角度来说，锁对数据库而言显得尤其重要，也更加复杂。
@@ -907,6 +810,159 @@ MVCC（Multi-Version Concurrency Control，多版本并发控制）可以认为�
 - 乐观锁不是数据库层面上的锁，需要手动加锁，一般是添加一个版本字段来实现。
 - 举例：`update A set name=xxx,version=version+1 where ID=#{id} and version=#{version}`，更新数据之前，判断version字段与当前的version字段是否相等，相等则更新成功，否则更新失败。
 - 如果两个事务同时更新同一行数据，一个事务如果更新成功，另一个事务就不能更新。
+
+
+
+# 日志
+
+在 MySQL 中，有 4 种不同的日志，分别是错误日志、二进制日志（BINLOG 日志）、查询日志和慢查询日志，这些日志记录着数据库在不同方面的踪迹。
+
+## 错误日志
+
+错误日志是 MySQL 中最重要的日志之一，它记录了当 MySQL 启动和停止时，以及服务器在运行过程中发生任何严重错误时的相关信息。当数据库出现任何故障导致无法正常使用时，可以首先查看此日志。
+
+该日志是默认开启的，默认存放目录为 MySQL 的数据目录（var/lib/mysql）, 默认的日志文件名为hostname.err（hostname是主机名）。
+
+查看日志位置指令：
+
+```mysql
+show variables like 'log_error%';
+```
+
+查看日志内容：
+
+```shell
+tail -f /var/lib/mysql/xaxh-server.err
+```
+
+
+## 二进制日志
+
+二进制日志（binary log，binlog）记录了所有的 DDL（数据定义语言）语句和 DML（数据操纵语言）语句，但是不包括数据查询语句。此日志对于灾难时的数据恢复起着极其重要的作用，MySQL的主从复制， 就是通过binlog实现的。
+
+默认情况下，二进制日志是没有开启的，需要在MySQL的配置文件中开启，并配置MySQL日志的文件名和格式。如果不指定日志的保存路径，则默认保存在MySQL的数据目录。
+
+```ini
+# 设置开启binlog日志，日志的文件前缀为mysqlbin，生成的文件名如mysqlbin.000001,mysqlbin.000002
+log_bin=mysqlbin
+# 配置二进制日志的格式
+binlog_format=STATEMENT/ROW/MIXED
+```
+
+二进制日志有三种格式：
+
+- STATEMENT：该日志格式在日志文件中记录的是SQL语句（STATEMENT），每一条对数据进行修改的SQL都会记录在日志文件中。通过MySQL提供的mysqlbinlog工具，可以查看到每条语句的文本。主从复制的时候，从库（slave）会将日志解析为原文本，并在从库重新执行一次。
+- ROW：该日志格式在日志文件中记录的是每一行的数据变更，而不是记录SQL语句。比如，执行SQL语句：`update
+  tb_book set status='1'`, 如果是STATEMENT格式，在日志中会记录一行SQL文件； 如果是ROW，由于是对全表进行更新，也就是每一行记录都会发生变更，日志中会记录每一行的数据变更。
+- MIXED：这是目前MySQL默认的日志格式，混合了STATEMENT 和 ROW两种格式。默认情况下采用STATEMENT，但是在一些特殊情况下采用ROW来进行记录。MIXED 格式能尽量利用两种模式的优点，而避开他们的缺点。
+
+由于日志以二进制方式存储，不能直接读取，需要使用mysqlbinlog工具来查看，语法如下：
+
+```mysql
+# 查看STATEMENT格式日志
+mysqlbinlog log-file;
+# 查看ROW格式日志
+mysqlbinlog -vv log-file;
+```
+
+对于比较繁忙的系统，由于每天生成日志量大，这些日志如果长时间不清除，将会占用大量的磁盘空间。删除日志有几种常用方法：
+
+```mysql
+# 删除全部 binlog 日志，删除之后，日志编号将从 xxxx.000001 重新开始。
+Reset Master;
+# 删除 ****** 编号之前的所有日志
+purge master logs to 'mysqlbin.******'
+# 删除 某一时间 之前产生的所有日志
+purge master logs before 'yyyy-mm-dd hh24:mi:ss'
+```
+
+还有一种删除日志的方法，但是不需要手动删除日志：#在MySQL配置文件中设置日志过期参数，过了指定天数后的日志将会被自动删除。
+
+```ini
+--expire_logs_days=xxx
+```
+
+
+## 查询日志
+
+查询日志中记录了客户端的所有操作语句，而二进制日志不包含查询数据的SQL语句。
+
+查询日志默认是未开启的。如果需要开启查询日志，可以配置：
+
+```ini
+# 设置是否开启查询日志，0表示关闭，1表示开启
+general_log=1
+# 设置日志的文件名，如果没有指定，默认的文件名为 host_name.log
+general_log_file=file_name
+```
+
+
+## 慢查询日志
+
+慢查询日志记录了执行时间超过参数`long_query_time`设置值并且扫描记录数不小于`min_examined_row_limit`的SQL语句。`long_query_time`默认为 10 秒，最小为 0， 精度可以到微秒。
+
+慢查询日志默认是关闭的。如果需要开启慢查询日志，可以配置：
+
+```ini
+# 设置是否开启慢查询日志， 0代表关闭，1代表开启
+slow_query_log=1
+# 设置慢查询日志的文件名
+slow_query_log_file=slow_query.log
+# 设置查询的时间限制，超过这个时间将认为是慢查询，需要进行日志记录，默认为10秒
+long_query_time=10
+```
+
+和错误日志、查询日志一样，慢查询日志记录的格式也是纯文本，可以被直接读取。
+
+如何查询`long_query_time`：
+
+```mysql
+show variables like 'long%';
+```
+
+如何查看慢查询日志：
+
+```shell
+# Linux
+cat slow_query.log
+```
+
+如果慢查询日志内容很多，直接查看文件比较麻烦，这个时候可以借助于MySQL自带的`mysqldumpslow`工具， 来对慢查询日志进行分类汇总。
+
+
+
+# 体系结构
+
+> [一条SQL语句在MySQL中如何执行的](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247485097&idx=1&sn=84c89da477b1338bdf3e9fcd65514ac1&chksm=cea24962f9d5c074d8d3ff1ab04ee8f0d6486e3d015cfd783503685986485c11738ccb542ba7&token=79317275&lang=zh_CN#rd)
+
+MySQL体系结构如下图所示：
+
+![MySQL体系结构](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030153533.png?token=AE4F4YPUQCBD6XAVVHQCJSC7TPBN6)
+
+整个MySQL Server由以下组成
+
+- Connection Pool：连接池组件
+- Management Services & Utilities：管理服务和工具组件
+- SQL Interface：SQL接口组件
+- Parser：查询分析器组件
+- Optimizer：优化器组件
+- Caches & Buffers：缓冲池组件
+- Pluggable Storage Engines：存储引擎
+- File System：文件系统
+
+MySQL包括：
+
+- 连接层：最上层是一些客户端和链接服务，包含本地socket通信和大多数基于客户端/服务端工具实现的类似于TCP/IP的通信。主要完成一些类似于连接处理、授权认证、及相关的安全方案。在该层上引入了线程池的概念，为通过认证安全接入的客户端提供线程。同样在该层上可以实现基于SSL的安全链接。服务器也会为安全接入的每个客户端验证它所具有的操作权限。
+- 服务层：第二层架构主要完成大多数的核心服务功能，如SQL接口，并完成缓存的查询，SQL的分析和优化，部分内置函数的执行。所有跨存储引擎的功能也在这一层实现，如过程、函数等。在该层，服务器会解析查询并创建相应的内部解析树，并对其完成相应的优化如确定表的查询的顺序，是否利用索引等，最后生成相应的执行操作。如果是select语句，服务器还会查询内部的缓存，如果缓存空间足够大，这样在解决大量读操作的环境中能够很好的提升系统的性能。
+- 引擎层：存储引擎层，存储引擎真正的负责了MySQL中数据的存储和提取，服务器通过API和存储引擎进行通信。不同的存储引擎具有不同的功能，这样我们可以根据自己的需要，来选取合适的存储引擎。
+- 存储层：数据存储层， 主要是将数据存储在文件系统之上，并完成与存储引擎的交互。
+
+和其他数据库相比，MySQL有点与众不同，它的架构可以在多种不同场景中应用并发挥良好作用。主要体现在存储引擎上，插件式的存储引擎架构，将查询处理和其他的系统任务以及数据的存储提取分离。这种架构可以根据业务的需求和实际需要选择合适的存储引擎。
+
+
+## 一条SQL语句的执行过程
+
+==TODO==
 
 
 
