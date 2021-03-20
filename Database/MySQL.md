@@ -191,6 +191,8 @@ MySQL还有很多其他函数，比如DATABASE、VERSION、USER、INET_ATON、IN
 
 
 ## 视图
+MySQL从5.0.1版本开始提供视图功能。
+
 视图（View）是一种虚拟存在的表。视图并不在数据库中实际存在，行和列数据来自定义视图的查询中使用的表，并且是在使用视图时动态生成的。通俗的讲，视图就是一条SELECT语句执行后返回的结果集。所以我们在创建视图的时候，主要的工作就落在创建这条SQL查询语句上。
 
 视图相对于普通的表的优势主要包括以下几项。
@@ -198,7 +200,12 @@ MySQL还有很多其他函数，比如DATABASE、VERSION、USER、INET_ATON、IN
 - 安全：使用视图的用户只能访问他们被允许查询的结果集，对表的权限管理并不能限制到某个行某个列，但是通过视图就可以简单的实现。
 - 数据独立：一旦视图的结构确定了，可以屏蔽表结构变化对用户的影响，源表增加列对视图没有影响；源表修改列名，则可以通过修改视图来解决，不会造成对访问者的影响。
 
+### 创建或修改视图
+
+创建视图需要有 CREATE VIEW的权限，并且对于查询涉及的列有 SELECT 权限。如果使用 CREATE OR REPLACE 或者 ALTER 修改视图，那么还需要该视图的 DROP 权限。
+
 创建视图：
+
 ```mysql
 CREATE [OR REPLACE] [ALGORITHM = {UNDEFINED | MERGE | TEMPTABLE}]
 VIEW view_name [(column_list)]
@@ -214,34 +221,56 @@ AS select_statement
 [WITH [CASCADED | LOCAL] CHECK OPTION]
 ```
 
+### 删除视图
+
+用户可以一次删除一个或多个视图，前提是必须有该视图的 DROP 权限。
+
+删除视图：
+
+```mysql
+DROP VIEW [IF EXISTS] view_name [, view_name] ...[RESTRICT | CASCADE]
+```
+
+### 查看视图
+
 从 MySQL 5.1 版本开始，使用 SHOW TABLES 命令的时候不仅显示表的名字，同时也会显示视图的名字，而不存在单独显示视图的 SHOW VIEWS 命令。
 
 查看表（包括视图）：
 ```mysql
 show tables;
-# 查看视图定义
+```
+
+查看视图的定义：
+
+```mysql
 show create view [view_name];
 ```
 
-删除视图：
-```mysql
-DROP VIEW [IF EXISTS] view_name [, view_name] ...[RESTRICT | CASCADE]
-```
-
-
 ## 存储过程和函数
-存储过程和函数是事先经过编译并存储在数据库中的一段SQL语句的集合，调用存储过程和函数可以简化应用开发人员的很多工作，减少数据在数据库和应用服务器之间的传输，对于提高数据处理的效率是有好处的。
 
-存储过程和函数的区别在于函数必须有返回值，而存储过程没有。换句话说：
+MySQL从 5.0 版本开始支持存储过程和函数。
+
+存储过程和函数是事先经过编译并存储在数据库中的一段 SQL 语句的集合，调用存储过程和函数可以简化应用开发人员的很多工作，减少数据在数据库和应用服务器之间的传输，对于提高数据处理的效率是有好处的。
+
+存储过程和函数的区别在于函数必须有返回值，而存储过程没有。存储过程的参数可以使用 IN、OUT、INOUT 类型，而函数的参数只能是 IN 类型的。
+
+换句话说：
+
 - 函数是一个有返回值的过程 ；
 - 过程是一个没有返回值的函数 ；
 
-创建存储过程：
+创建存储过程或函数：
 ```mysql
 CREATE PROCEDURE procedure_name ([proc_parameter[,...]])
 begin
 -- SQL语句
-end ;
+end;
+
+CREATE FUNCTION function_name ([func_parameter[,...]])
+begin
+-- SQL语句
+-- RETURNS
+end;
 ```
 
 示例：
@@ -249,36 +278,41 @@ end ;
 delimiter $
 create procedure pro_test1()
 begin
-    select 'Hello Mysql' ;
+    select 'Hello Mysql';
 end $
 delimiter ;
 ```
 
-> DELIMITER。该关键字用来声明SQL语句的分隔符，告诉 MySQL 解释器，该段命令是否已经结束了，mysql是否可以执行了。默认情况下，delimiter是分号。在命令行客户端中，如果有一行命令以分号结束，那么回车后，mysql将会执行该命令。
+> DELIMITER。该关键字用来声明SQL语句的分隔符，告诉 MySQL 解释器，该段命令已经结束。默认情况下，delimiter 是分号。在命令行客户端中，如果有一行命令以分号结束，那么回车后，MySQL 将会执行该命令。由于中间的 SQL 语句需要使用分号，所以整个命令的分隔符必须修改为其他符号。
 
 调用存储过程：
 ```mysql
-call procedure_name() ;
+call procedure_name();
 ```
 
-查看存储过程：
+删除存储过程或函数：
+
 ```mysql
--- 查询db_name数据库中的所有的存储过程
-select name from mysql.proc where db='db_name';
--- 查询存储过程的状态信息
-show procedure status;
--- 查询某个存储过程的定义
-show create procedure test.pro_test1 \G;
+DROP [PROCEDURE | FUNCTION] [IF EXISTS] sp_name;
 ```
 
-删除存储过程：
-```
-DROP PROCEDURE [IF EXISTS] sp_name；
+查看存储过程或函数：
+
+```mysql
+SHOW [PROCEDURE | FUNCTION] status [LIKE 'pattern'];
 ```
 
+查询存储过程或函数的定义：
+
+```mysql
+SHOW CREATE [PROCEDURE | FUNCTION] sp_name;
+```
 
 ## 触发器
-触发器是与表有关的数据库对象，指在 insert/update/delete 之前或之后，触发并执行触发器中定义的SQL语句集合。触发器的这种特性可以协助应用在数据库端确保数据的完整性 , 日志记录 , 数据校验等操作 。
+
+MySQL 从 5.0.2 版本开始支持触发器。
+
+触发器是与表有关的数据库对象，在满足条件（INSERT、UPDATE、DELETE之前或之后）时触发，并执行触发器中定义的语句集合。触发器的这种特性可以协助应用在数据库端确保数据的完整性、记录日志等 。
 
 使用别名 OLD 和 NEW 来引用触发器中发生变化的记录内容，这与其他的数据库是相似的。现在触发器还只支持行级触发，不支持语句级触发。
 
@@ -290,10 +324,10 @@ DROP PROCEDURE [IF EXISTS] sp_name；
 
 创建触发器：
 ```mysql
-create trigger trigger_name
-before/after insert/update/delete
-on tbl_name
-[ for each row ] -- 行级触发器
+CREATE TRIGGER trigger_name
+BEFORE|AFTER INSERT|UPDATE|DELETE
+ON tbl_name
+[FOR EACH ROW] -- 行级触发器
 begin
     trigger_stmt;
 end;
@@ -301,12 +335,12 @@ end;
 
 查看触发器：
 ```mysql
-show triggers；
+SHOW TRIGGERS;
 ```
 
 删除触发器：
 ```mysql
-drop trigger [schema_name.] trigger_name;
+DROP TRIGGER [schema_name.] trigger_name;
 ```
 
 
