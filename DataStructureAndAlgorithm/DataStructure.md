@@ -4,7 +4,7 @@
 
 # 推荐资料
 
-> [旧金山大学数据结构可视化网站](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
+> [旧金山大学数据结构与算法可视化工具](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
 
 
 
