@@ -38,7 +38,7 @@ MySQL的默认端口号是3306。
 
 SQL语句主要可以划分为以下3个类别：
 
-- DDL(Data Definition Language)语句：数据定义语言，主要用来定义数据库、表、列、索引等数据库对象。常用的语句关键字主要包括create、drop、alater等。
+- DDL(Data Definition Language)语句：数据定义语言，主要用来定义数据库、表、列、索引等数据库对象。常用的语句关键字主要包括create、drop、alter等。
 - DML(Data Manipulation Language)语句：数据操纵语句，用于添加、删除、更新和查询数据库记录。常用的语句关键字主要包括insert、delete、update和select等。
 - DCL(Data Control Language)语句：数据控制语句，用于定义数据库、表、字段、用户的访问权限和安全级别。主要的语句关键字包括grant、revoke等。
 
@@ -61,7 +61,14 @@ CREATE TABLE IF NOT EXISTS `tbl`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
+删除数据表以及表中的所有数据：
+
+```mysql
+DROP TABLE table_name;
+```
+
 查询：
+
 ```mysql
 SELECT DISTINCT
     <select list>
@@ -83,9 +90,9 @@ LIMIT
 
 增加：
 ```mysql
-INSERT INTO table_name VALUES (value1, value2,...valueN);
+INSERT INTO table_name VALUES (value1, value2, ..., valueN);
 
-INSERT INTO table_name (field1, field2,...fieldN) VALUES (value1, value2,...valueN);
+INSERT INTO table_name (field1, field2,...fieldN) VALUES (value1, value2, ..., valueN);
 ```
 
 更新：
@@ -97,6 +104,12 @@ UPDATE table_name SET field1=value1, field2=value2
 删除：
 ```mysql
 DELETE FROM table_name [WHERE Clause]
+```
+
+清空数据表，即删除数据表中的所有数据，但不删除表结构：
+
+```mysql
+TRUNCATE TABLE table_name;
 ```
 
 ## 数据类型
@@ -191,9 +204,9 @@ MySQL还有很多其他函数，比如DATABASE、VERSION、USER、INET_ATON、IN
 
 
 ## 视图
-MySQL从5.0.1版本开始提供视图功能。
+MySQL 从 5.0.1 版本开始提供视图功能。
 
-视图（View）是一种虚拟存在的表。视图并不在数据库中实际存在，行和列数据来自定义视图的查询中使用的表，并且是在使用视图时动态生成的。通俗的讲，视图就是一条SELECT语句执行后返回的结果集。所以我们在创建视图的时候，主要的工作就落在创建这条SQL查询语句上。
+视图（View）是一种虚拟存在的表。视图并不在数据库中实际存在，行和列数据来自定义视图的查询中使用的表，并且是在使用视图时动态生成的。通俗的讲，视图就是一条 SELECT 语句执行后返回的结果集。所以我们在创建视图的时候，主要的工作就落在创建这条 SQL 查询语句上。
 
 视图相对于普通的表的优势主要包括以下几项。
 - 简单：使用视图的用户完全不需要关心后面对应的表的结构、关联条件和筛选条件，对用户来说已经是过滤好的复合条件的结果集。
@@ -202,7 +215,7 @@ MySQL从5.0.1版本开始提供视图功能。
 
 ### 创建或修改视图
 
-创建视图需要有 CREATE VIEW的权限，并且对于查询涉及的列有 SELECT 权限。如果使用 CREATE OR REPLACE 或者 ALTER 修改视图，那么还需要该视图的 DROP 权限。
+创建视图需要有 CREATE VIEW 的权限，并且对于查询涉及的列有 SELECT 权限。如果使用 CREATE OR REPLACE 或者 ALTER 修改视图，那么还需要该视图的 DROP 权限。
 
 创建视图：
 
@@ -237,27 +250,24 @@ DROP VIEW [IF EXISTS] view_name [, view_name] ...[RESTRICT | CASCADE]
 
 查看表（包括视图）：
 ```mysql
-show tables;
+SHOW tables;
 ```
 
 查看视图的定义：
 
 ```mysql
-show create view [view_name];
+SHOW CREATE VIEW [view_name];
 ```
 
 ## 存储过程和函数
 
-MySQL从 5.0 版本开始支持存储过程和函数。
+MySQL 从 5.0 版本开始支持存储过程和函数。
 
 存储过程和函数是事先经过编译并存储在数据库中的一段 SQL 语句的集合，调用存储过程和函数可以简化应用开发人员的很多工作，减少数据在数据库和应用服务器之间的传输，对于提高数据处理的效率是有好处的。
 
 存储过程和函数的区别在于函数必须有返回值，而存储过程没有。存储过程的参数可以使用 IN、OUT、INOUT 类型，而函数的参数只能是 IN 类型的。
 
-换句话说：
-
-- 函数是一个有返回值的过程 ；
-- 过程是一个没有返回值的函数 ；
+换句话说，函数是一个有返回值的过程 ，过程是一个没有返回值的函数 。
 
 创建存储过程或函数：
 ```mysql
@@ -276,7 +286,7 @@ end;
 示例：
 ```mysql
 delimiter $
-create procedure pro_test1()
+CREATE PROCEDURE pro_test1()
 begin
     select 'Hello Mysql';
 end $
@@ -287,7 +297,7 @@ delimiter ;
 
 调用存储过程：
 ```mysql
-call procedure_name();
+CALL procedure_name();
 ```
 
 删除存储过程或函数：
@@ -312,7 +322,7 @@ SHOW CREATE [PROCEDURE | FUNCTION] sp_name;
 
 MySQL 从 5.0.2 版本开始支持触发器。
 
-触发器是与表有关的数据库对象，在满足条件（INSERT、UPDATE、DELETE之前或之后）时触发，并执行触发器中定义的语句集合。触发器的这种特性可以协助应用在数据库端确保数据的完整性、记录日志等 。
+触发器是与表有关的数据库对象，在满足条件时（INSERT、UPDATE、DELETE之前或之后）触发，并执行触发器中定义的语句集合。触发器的这种特性可以协助应用在数据库端确保数据的完整性、记录日志等 。
 
 使用别名 OLD 和 NEW 来引用触发器中发生变化的记录内容，这与其他的数据库是相似的。现在触发器还只支持行级触发，不支持语句级触发。
 
@@ -326,7 +336,7 @@ MySQL 从 5.0.2 版本开始支持触发器。
 ```mysql
 CREATE TRIGGER trigger_name
 BEFORE|AFTER INSERT|UPDATE|DELETE
-ON tbl_name
+ON table_name
 [FOR EACH ROW] -- 行级触发器
 begin
     trigger_stmt;
@@ -351,7 +361,7 @@ DROP TRIGGER [schema_name.] trigger_name;
 
 > [数据库两大神器【索引和锁】](https://juejin.im/post/6844903645125820424)
 
-索引（index）是帮助MySQL高效获取数据的数据结构（有序）。在数据之外，数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查找算法，这种数据结构就是索引。通常的索引结果如下图所示：
+索引（index）是帮助MySQL高效获取记录的数据结构。在数据之外，数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查找算法，这种数据结构就是索引。通常的索引结果如下图所示：
 
 <img src="https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201030153654.png?token=AE4F4YNWSDL53EYEXXIQSHC7TPBS6" alt="MySQL索引示例"  />
 
