@@ -489,9 +489,9 @@ Map，存储的元素是键值对（`key-value`），`key`是没有顺序的，�
 ArrayList底层是数组。在添加一个元素前，如果数组为空或数组已满，则需要扩容。扩容分为两种情况：
 1. 通过默认构造函数`ArrayList()`创建对象，底层为一个空数组，第一次扩容后数组容量变为`10`（默认容量）；
 2. 先计算新的容量`newCapacity`为数组的旧的容量`oldCapacity`的`1.5`倍，有三种情况：
-    1. 如果新的容量不够，数组容量变为当前容量加`1`：
+    1. 如果新的容量不够，数组容量变为当前容量加`1`：                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
         - 通过`ArrayList(0)`创建对象，指定容量为`0`，此时底层也是一个空数组（和默认构造函数创建的空数组不同）。因为`0`乘以`1.5`之后还是`0`，所以第一次扩容后数组容量变为`1`；
-        - 比如数组已满，当前容量为`1`。因为`1`乘以`1.5`之后是`1`，所以扩容后数组容量变为`2`；
+        - 如果数组当前容量为`1`，已满。因为`1`乘以`1.5`之后是`1`，所以扩容后数组容量变为`2`；
     2. 如果新的容量大于最大数组长度（`MAX_ARRAY_SIZE=Integer.MAX_VALUE-8`）：
         - 如果`minCapacity<0`，抛出内存溢出错误；
         - 如果`minCapacity>MAX_ARRAY_SIZE`，数组容量变为Integer整数的最大值）；
@@ -859,7 +859,6 @@ AIO 是异步IO的缩写，也就是 NIO 2。在 Java 7 中引入了 NIO 的改�
 - 调度：进程是操作系统分配资源的基本单位，线程是 CPU调度的基本单位。
 - 并发性：引入线程之后，不仅进程之间是可以并发执行的，而且在一个进程之中的多个线程也是可以并发执行的，甚至是允许一个进程中的全部进程并发执行。同样，不同的进程中的线程也是可以并发执行的。
 
-  
 
 ## 并发和并行
 > [并发和并行的区别](https://www.jianshu.com/p/cbf9588b2afb)
@@ -927,15 +926,15 @@ Object ret = task.get(); // 当前线程阻塞，等待task获取结果
 
 
 ## 线程的状态和生命周期
-Java线程在生命周期中存在6种状态（图源《Java并发编程艺术》4.1.4 节）。
+Java线程在生命周期中存在6种状态（图源《Java并发编程的艺术》4.1.4 节）。
 
 ![Java线程状态](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201029200957.png?token=AE4F4YNDGZCUUZVXQYCTSS27TKY3E)
 
-线程并不是固定处于某一个状态，而是随着代码的执行在不同状态之间切换。Java 线程状态变迁如下图所示（图源《Java并发编程艺术》4.1.4 节）：
+线程并不是固定处于某一个状态，而是随着代码的执行在不同状态之间切换。Java 线程状态变迁如下图所示（图源《Java并发编程的艺术》4.1.4 节）：
 
 ![Java线程状态变迁](https://raw.githubusercontent.com/shengchaohua/MyImages/main/images/20201029201036.png?token=AE4F4YMXR3RBL4H6MWF4BCC7TKY5S)
 
-> 订正(来自issue736)：原图中RUNNABLE到WAITING状态的转换中，join实际上是Thread类的成员方法，但这里写成了Object。
+> 订正：在RUNNABLE到WAITING状态的转换中，join实际上是Thread类的成员方法，但这里写成了Object。
 
 由上图可以看出：线程创建之后处于NEW（初始）状态，调用`start()`方法后，线程此时处于RUNNABLE（运行）状态。
 
