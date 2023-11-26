@@ -1,4 +1,4 @@
-# MyNotes
+# my-notes
 
 
 

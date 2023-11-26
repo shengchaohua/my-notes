@@ -1,5 +1,18 @@
 [TOC]
 
+# 虚拟环境
+
+## virtualenv
+
+```bash
+pip install virtualenv
+
+virtualenv --python=3.6 py36
+source venv/bin/activate
+```
+
+
+
 # 内存管理
 
 > [IT诸葛亮](https://www.jianshu.com/p/0914a5e9ae37)
