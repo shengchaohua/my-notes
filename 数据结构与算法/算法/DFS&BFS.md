@@ -1,9 +1,9 @@
-[TOC]
 
 
-# 编程题
 
-## 岛屿数量
+## Leetcode 编程题
+
+### Leetcode 200. 岛屿数量
 
 > [Leetcode 200. 岛屿数量](https://leetcode-cn.com/problems/number-of-islands/ "Leetcode 200. 岛屿数量")
 
@@ -17,7 +17,7 @@
 
 二、解析
 
-代码如下：
+Python 代码如下：
 
 ```python
 class Solution:
@@ -27,7 +27,7 @@ class Solution:
                 return 
             elif grid[r][c] == '0':
                 return 
-            elif grid[r][c] != '1':  # grid[r][c] == 2
+            elif grid[r][c] != '1':  ## grid[r][c] == 2
                 return 
             grid[r][c] = '2'
             dfs(grid, r-1, c)
@@ -45,7 +45,43 @@ class Solution:
         return count
 ```
 
-## 岛屿的最大面积
+由于 Go 语言不支持匿名的递归函数，所以需要把递归函数定义在全局作用域。代码如下：
+
+```go
+func numIslands(grid [][]byte) int {
+	count := 0
+	for row := 0; row < len(grid); row++ {
+		for col := 0; col < len(grid[0]); col++ {
+			if grid[row][col] == '1' {
+				count += 1
+				dfs(grid, row, col)
+			}
+		}
+	}
+	return count
+}
+
+func dfs(grid [][]byte, row, col int) {
+	if !(0 <= row && row < len(grid) && 0 <= col && col < len(grid[0])) {
+		return
+	} else if grid[row][col] == '0' {
+		return
+	} else if grid[row][col] != '1' { // grid[r][c] == 2
+		return
+	}
+
+	grid[row][col] = 2
+	dfs(grid, row-1, col)
+	dfs(grid, row+1, col)
+	dfs(grid, row, col-1)
+	dfs(grid, row, col+1)
+	return
+}
+```
+
+
+
+### Leetcode 695. 岛屿的最大面积
 
 > [Leetcode 695. 岛屿的最大面积](https://leetcode-cn.com/problems/max-area-of-island/ "Leetcode 695. 岛屿的最大面积")
 
@@ -69,7 +105,7 @@ class Solution:
                 return 0
             elif grid[r][c] == 0:
                 return 0
-            elif grid[r][c] != 1:  # grid[r][c] == 2
+            elif grid[r][c] != 1:  ## grid[r][c] == 2
                 return 0
             grid[r][c] = 2
             return 1 + dfs(grid, r-1, c) + dfs(grid, r+1, c) + dfs(grid, r, c-1) + dfs(grid, r, c+1)
@@ -83,7 +119,9 @@ class Solution:
         return res
 ```
 
-## 岛屿的周长
+
+
+### Leetcode 463. 岛屿的周长
 
 > [Leetcode 463. 岛屿的周长](https://leetcode-cn.com/problems/island-perimeter/ "Leetcode 463. 岛屿的周长")
 
@@ -107,7 +145,7 @@ class Solution:
                 return 1
             elif grid[r][c] == 0:
                 return 1
-            elif grid[r][c] != 1:  # grid[r][c] == 2
+            elif grid[r][c] != 1:  ## grid[r][c] == 2
                 return 0
             grid[r][c] = 2
             return dfs(grid, r-1, c) + dfs(grid, r+1, c) + dfs(grid, r, c-1) + dfs(grid, r, c+1)
@@ -120,7 +158,9 @@ class Solution:
         return res
 ```
 
-## 被围绕的区域
+
+
+### Leetcode 130. 被围绕的区域
 
 > [Leetcode 130. 被围绕的区域](https://leetcode-cn.com/problems/surrounded-regions/ "Leetcode 130. 被围绕的区域")
 
@@ -132,19 +172,16 @@ class Solution:
 
 示例1：
 
-![](image/image_7BM7Wp1XS_.png)
-
 ```纯文本
 输入：board = [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]
 输出：[["X","X","X","X"],["X","X","X","X"],["X","X","X","X"],["X","O","X","X"]]
 解释：被围绕的区间不会存在于边界上，换句话说，任何边界上的 'O' 都不会被填充为 'X'。 
 任何不在边界上，或不与边界上的 'O' 相连的 'O' 最终都会被填充为 'X'。如果两个元素在水平或垂直方向相邻，则称它们是“相连”的。
-
 ```
 
 二、解析
 
-> 参考 [Leetcode官方题解](https://leetcode-cn.com/problems/surrounded-regions/solution/bei-wei-rao-de-qu-yu-by-leetcode-solution/ "Leetcode官方题解")
+> 参考 [Leetcode官方题解](https://leetcode-cn.com/problems/surrounded-regions/solution/bei-wei-rao-de-qu-yu-by-leetcode-solution/)
 
 标记边界的'O'及相连的'O'，没有被标记的'O'就是被包围的。
 
@@ -182,7 +219,9 @@ class Solution:
                     board[i][j] = "X"
 ```
 
-## 单词搜索
+
+
+### Leetcode 79. 单词搜索
 
 > [Leetcode 79. 单词搜索](https://leetcode-cn.com/problems/word-search/ "Leetcode 79. 单词搜索")
 
@@ -221,30 +260,32 @@ class Solution:
                 return False
             if index == len(word) - 1:
                 return True
-            # 先占住这个位置，搜索不成功的话，要释放掉
+            ## 先占住这个位置，搜索不成功的话，要释放掉
             marked[x][y] = True
             for direction in [[0, -1], [0, 1], [-1, 0], [1, 0]]:
                 new_x = x + direction[0]
                 new_y = y + direction[1]
-                # 如果这一次 search word 成功的话，就返回
+                ## 如果这一次 search word 成功的话，就返回
                 if 0 <= new_x < m and 0 <= new_y < n and \
                         not marked[new_x][new_y] and \
                         dfs(board, m, n, word, new_x, new_y, index + 1, marked):
                     return True
-            marked[x][y] = False  # 状态重置
+            marked[x][y] = False  ## 状态重置
 
         m = len(board)
         n = len(board[0])
         marked = [[False for _ in range(n)] for _ in range(m)]
         for i in range(m):
             for j in range(n):
-                # 对每一个格子都从头开始搜索
+                ## 对每一个格子都从头开始搜索
                 if dfs(board, m, n, word, i, j, 0, marked):
                     return True
         return False
 ```
 
-## 全排列
+
+
+### Leetcode 46. 全排列
 
 > [Leetcode 46. 全排列](https://leetcode-cn.com/problems/permutations/ "Leetcode 46. 全排列")
 
@@ -267,7 +308,7 @@ class Solution:
 ]
 ```
 
-### **解析**
+二、解析
 
 > 参考 [回溯算法入门级详解 + 练习（持续更新）](https://leetcode-cn.com/problems/permutations/solution/hui-su-suan-fa-python-dai-ma-java-dai-ma-by-liweiw/ "回溯算法入门级详解 + 练习（持续更新）")
 
@@ -279,9 +320,7 @@ class Solution:
 
 先画树形图，画图能帮助我们想清楚递归结构，想清楚如何剪枝。
 
-对于示例，属性图如下所示：
-
-![](image/image_Q1bBEMFBLZ.png)
+![image.png](https://raw.githubusercontent.com/shengchaohua/my-images/main/images/202401112148857.png)
 
 代码如下：
 
@@ -308,7 +347,9 @@ class Solution:
         return res
 ```
 
-因为排列的长度是固定的，所以可以使用固定长度的list，避免append和pop操作。代码如下：
+因为排列的长度是固定的，所以可以使用固定长度的list，避免append和pop操作。
+
+Python 代码如下：
 
 ```python
 class Solution:
@@ -333,7 +374,42 @@ class Solution:
         return res
 ```
 
-## 全排列 II
+Golang 代码如下：
+
+```go
+func permute(nums []int) [][]int {
+	if len(nums) == 0 {
+		return nil
+	}
+
+	perm := make([]int, len(nums))
+	used := make([]bool, len(nums))
+	return dfs(nums, perm, used, 0)
+}
+
+func dfs(nums []int, perm []int, used []bool, depth int) [][]int {
+	var res [][]int
+	if depth == len(nums) {
+		res = append(res, append([]int{}, perm...))
+		return res
+	}
+
+	for i, num := range nums {
+		if !used[i] {
+			perm[depth] = num
+			used[i] = true
+			cur := dfs(nums, perm, used, depth+1)
+			res = append(res, cur...)
+			used[i] = false
+		}
+	}
+	return res
+}
+```
+
+
+
+### Leetcode 47. 全排列 II
 
 > [Leetcode 47. 全排列 II](https://leetcode-cn.com/problems/permutations-ii/ "Leetcode 47. 全排列 II")
 
@@ -387,7 +463,9 @@ class Solution:
         return res
 ```
 
-## 组合总数
+
+
+### Leetcode 39. 组合总数
 
 > [Leetcode 39. 组合总和](https://leetcode-cn.com/problems/combination-sum/ "Leetcode 39. 组合总和")
 
@@ -415,9 +493,11 @@ class Solution:
 
 二、解析
 
-> 参考 [回溯算法 + 剪枝（回溯经典例题详解）](https://leetcode-cn.com/problems/combination-sum/solution/hui-su-suan-fa-jian-zhi-python-dai-ma-java-dai-m-2/ "回溯算法 + 剪枝（回溯经典例题详解）")
+> 参考 [回溯算法 + 剪枝（回溯经典例题详解）](https://leetcode-cn.com/problems/combination-sum/solution/hui-su-suan-fa-jian-zhi-python-dai-ma-java-dai-m-2/)
 
 关键是如何去重。画树形图，从每一层的第2个结点开始，都不能再搜索产生同一层结点已经使用过的 candidate 里的元素。
+
+![img](https://raw.githubusercontent.com/shengchaohua/my-images/main/images/202401120907375.png)
 
 代码如下：
 
@@ -470,7 +550,9 @@ class Solution:
         return res
 ```
 
-## 组合总数 II
+
+
+### Leetcode 40. 组合总数 II
 
 > [Leetcode 40. 组合总和 II](https://leetcode-cn.com/problems/combination-sum-ii/ "Leetcode 40. 组合总和 II")
 
@@ -529,7 +611,9 @@ class Solution:
         return res
 ```
 
-## 组合
+
+
+### Leetcode 77. 组合
 
 > [Leetcode 77. 组合](https://leetcode-cn.com/problems/combinations/ "Leetcode 77. 组合")
 
@@ -568,7 +652,7 @@ class Solution:
                 res.append(path[:])
                 return
             for i in range(start, len(nums)):
-            # for i in range(start, len(nums) - (k - depth) + 1):
+            ## for i in range(start, len(nums) - (k - depth) + 1):
                 path[depth] = nums[i]
                 dfs(nums, k, i + 1, path, depth + 1)
         
@@ -605,13 +689,15 @@ class Solution:
 可以使用剪枝技术来提高算法效率。举例，对于`n = 7, k = 4`，从 5 开始搜索就已经没有意义了，这是因为：即使把 5 选上，后面的数只有 6 和 7，一共就 3 个候选数，凑不出 4 个数的组合。因此，搜索起点有上界，可以使用剪枝技术，避免不必要的遍历，加快算法。
 
 ```python
-# 1、使用数组，其中的start表示数组下标，初始为0
+## 1、使用数组，其中的start表示数组下标，初始为0
 for i in range(start, len(nums) - (k - depth) + 1):
-# 2、不用数组，其中的start表示数字，初始为1
+## 2、不用数组，其中的start表示数字，初始为1
 for i in range(start, n - (k - depth) + 2):
 ```
 
-## 子集
+
+
+### Leetcode 78. 子集
 
 > [Leetcode 78. 子集](https://leetcode-cn.com/problems/subsets/ "Leetcode 78. 子集")
 
@@ -651,8 +737,8 @@ class Solution:
             if depth == k:
                 res.append(path[:])
                 return
-            for i in range(start, len(nums)): # 没有剪枝
-            # for i in range(start, len(nums) - (k - depth) + 1): # 剪枝
+            for i in range(start, len(nums)): ## 没有剪枝
+            ## for i in range(start, len(nums) - (k - depth) + 1): ## 剪枝
                 path.append(nums[i])
                 dfs(nums, k, i + 1, path, depth + 1)
                 path.pop()
@@ -663,7 +749,9 @@ class Solution:
         return res
 ```
 
-## 子集 II
+
+
+### Leetcode 90. 子集 II
 
 > [Leetcode 90. 子集 II](https://leetcode-cn.com/problems/subsets-ii/ "Leetcode 90. 子集 II")
 
@@ -701,8 +789,8 @@ class Solution:
             if depth == k:
                 res.append(path[:])
                 return
-            for i in range(start, len(nums)): # 没有剪枝
-            # for i in range(start, len(nums) - (k - depth) + 1): # 剪枝
+            for i in range(start, len(nums)): ## 没有剪枝
+            ## for i in range(start, len(nums) - (k - depth) + 1): ## 剪枝
                 if i > start and nums[i] == nums[i - 1]:
                     continue
                 path.append(nums[i])
@@ -716,7 +804,9 @@ class Solution:
         return res
 ```
 
-## 第k个排列
+
+
+### Leetcode 60. 第k个排列
 
 > [Leetcode 60. 第k个排列](https://leetcode-cn.com/problems/permutation-sequence/ "Leetcode 60. 第k个排列")
 
@@ -762,7 +852,7 @@ class Solution:
                     dfs(nums, k, path, used, depth + 1)
                     path.pop()
                     used[i] = False
-                    if res[0] == k: # 得到结果即返回
+                    if res[0] == k: ## 得到结果即返回
                         break
                         
         nums = list(range(1, n + 1))
@@ -777,10 +867,6 @@ class Solution:
 > 参考 [深度优先遍历 + 剪枝、有序数组模拟](https://leetcode-cn.com/problems/permutation-sequence/solution/hui-su-jian-zhi-python-dai-ma-java-dai-ma-by-liwei/ "深度优先遍历 + 剪枝、有序数组模拟")
 
 画树形图，所求排列一定在叶子结点处得到，每个分支下的叶结点个数可求，所以不必求出所有的全排列。
-
-树形图如下：
-
-![](image/image_8IEnt5FU0O.png)
 
 代码如下：
 
@@ -800,7 +886,7 @@ class Solution:
                 path.append(i)
                 used[i] = True
                 dfs(n, k, start, path, depth + 1)
-                # 注意：这里要加 return，后面的数没有必要遍历去尝试了
+                ## 注意：这里要加 return，后面的数没有必要遍历去尝试了
                 return
 
         if n == 0:
@@ -817,7 +903,9 @@ class Solution:
 
 ```
 
-## 复原IP地址
+
+
+### Leetcode 93. 复原IP地址
 
 > [Leetcode 93. 复原IP地址](https://leetcode-cn.com/problems/restore-ip-addresses/ "Leetcode 93. 复原IP地址")
 
@@ -853,29 +941,29 @@ class Solution:
 
 二、解析
 
-代码如下：
+Python 代码如下：
 
 ```python
 class Solution:
     def restoreIpAddresses(self, s: str) -> List[str]:
         def dfs(s, seg_start, segments, seg_id):
-            # 如果找到了 4 段 IP 地址并且遍历完了字符串，那么就是一种答案
-            if seg_id == SEG_COUNT:
+            ## 如果找到了 4 段 IP 地址并且遍历完了字符串，那么就是一种答案
+            if seg_start == len(s) and seg_id == 4:
                 if seg_start == len(s):
                     ip_addr = ".".join(str(seg) for seg in segments)
                     res.append(ip_addr)
                 return
             
-            # 如果还没有找到 4 段 IP 地址就已经遍历完了字符串，那么提前回溯
-            if seg_start == len(s):
+            ## 如果还没有找到 4 段 IP 地址就已经遍历完了字符串，那么提前回溯
+            if seg_start == len(s) or seg_id == 4:
                 return
 
-            # 由于不能有前导零，如果当前数字为 0，那么这一段 IP 地址只能为 0
+            ## 由于不能有前导零，如果当前数字为 0，那么这一段 IP 地址只能为 0
             if s[seg_start] == "0":
                 segments[seg_id] = 0
                 dfs(s, seg_start + 1, segments, seg_id + 1)
             
-            # 一般情况，枚举每一种可能性并递归
+            ## 一般情况，枚举每一种可能性并递归
             addr = 0
             for idx in range(seg_start, len(s)):
                 addr = addr * 10 + (ord(s[idx]) - ord("0"))
@@ -891,7 +979,51 @@ class Solution:
         return res
 ```
 
-## 电话号码的字母组合
+Golang 无法在函数内声明一个带递归的匿名函数，只能在全局作用域声明。
+
+代码如下：
+
+```go
+func restoreIpAddresses(s string) []string {
+	return restore(s, []int{0, 0, 0, 0}, 0, 0)
+}
+
+
+func restore(s string, ip []int, start int, no int) []string {
+	if start == len(s) && no == 4 {
+		ipStr := fmt.Sprintf("%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3])
+		return []string{ipStr}
+	}
+	if start == len(s) || no == 4 {
+		return nil
+	}
+
+	var total []string
+	if s[start] == '0' {
+		ip[no] = 0
+		res := restore(s, ip, start+1, no+1)
+		total = append(total, res...)
+		return total
+	}
+
+	seg := 0
+	for i := start; i < len(s); i++ {
+		seg = seg*10 + int(rune(s[i])-'0')
+		if 0 < seg && seg <= 255 {
+			ip[no] = seg
+			res := restore(s, ip, i+1, no+1)
+			total = append(total, res...)
+		} else {
+			break
+		}
+	}
+	return total
+}
+```
+
+
+
+### Leetcode 17. 电话号码的字母组合
 
 > [Leetcode 17. 电话号码的字母组合](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/ "Leetcode 17. 电话号码的字母组合")
 
@@ -947,9 +1079,11 @@ class Solution:
         return res
 ```
 
-## 括号生成
 
-> [https://leetcode.cn/problems/generate-parentheses/](https://leetcode.cn/problems/generate-parentheses/ "https://leetcode.cn/problems/generate-parentheses/")
+
+### Leetcode 22. 括号生成
+
+> [Leetcode 22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)
 
 一、题目
 
@@ -1012,7 +1146,11 @@ class Solution:
         return dfs("", n, n)
 ```
 
-## 奇怪的电梯
+
+
+## 其他编程题
+
+### 奇怪的电梯
 
 > [http://ybt.ssoier.cn:8088/problem\_show.php?pid=1360](http://ybt.ssoier.cn:8088/problem_show.php?pid=1360 "http://ybt.ssoier.cn:8088/problem_show.php?pid=1360")
 
