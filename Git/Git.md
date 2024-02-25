@@ -35,7 +35,6 @@ git checkout -b <branch-name>
 ```bash
 git branch -d <branch-name>
 git branch -D <branch-name> # 强制删除，如果这个分支真的没有用
-
 ```
 
 删除远程分支
@@ -183,7 +182,6 @@ git remote -v # 更详细
 
 ```bash
 git checkout -b <branch-name> origin/<branch-name> # 本地分支 远程分支
-
 ```
 
 为了避免打错字导致本地分支名和远程分支名不相同（实际上不会有什么问题，只是强迫症），推荐使用：
