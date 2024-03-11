@@ -59,7 +59,7 @@ netstat -tlnp | grep 8000
 查看文件夹占用存储大小
 
 ```
-su -sh <dir>
+du -sh <dir>
 ```
 
 

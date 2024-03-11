@@ -611,7 +611,7 @@ typedef struct zset {
 
 > https://juejin.cn/post/7021822201779191815
 
-Bitmaps 并不是一个数据类型，本质上还是一个 String，主要是定义了一个面向比特（bit）操作的集合。Bitmaps 可以称为位图，或者二进制位数组。
+Bitmaps 并不是一个数据类型，本质上还是一个 String，主要是定义了一个面向比特（bit）操作的集合。Bitmaps 可以称为位图或位数组。
 
 用途：用于大量数据去重，用户登录统计等需求。
 

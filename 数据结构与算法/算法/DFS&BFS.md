@@ -1,11 +1,14 @@
-
+---
+title: DFS&BFS
+order: 5
+---
 
 
 ## Leetcode 编程题
 
-### Leetcode 200. 岛屿数量
+### 200. 岛屿数量
 
-> [Leetcode 200. 岛屿数量](https://leetcode-cn.com/problems/number-of-islands/ "Leetcode 200. 岛屿数量")
+> [200. 岛屿数量](https://leetcode-cn.com/problems/number-of-islands/ "200. 岛屿数量")
 
 一、题目
 
@@ -16,6 +19,10 @@
 此外，你可以假设该网格的四条边均被水包围。
 
 二、解析
+
+> [官方题解](https://leetcode.cn/problems/number-of-islands/solutions/13103/dao-yu-shu-liang-by-leetcode/)
+
+1）DFS
 
 Python 代码如下：
 
@@ -45,7 +52,9 @@ class Solution:
         return count
 ```
 
-由于 Go 语言不支持匿名的递归函数，所以需要把递归函数定义在全局作用域。代码如下：
+由于 Go 语言不支持匿名的递归函数，所以需要把递归函数定义在全局作用域。
+
+代码如下：
 
 ```go
 func numIslands(grid [][]byte) int {
@@ -79,11 +88,43 @@ func dfs(grid [][]byte, row, col int) {
 }
 ```
 
+2）BFS
+
+扫描整个二维网格，如果一个位置为 1，则将其加入队列，开始进行广度优先搜索。在广度优先搜索的过程中，每个搜索到的 1 都会被重新标记为 0。直到队列为空，搜索结束。最终岛屿的数量就是进行广度优先搜索的次数。
+
+代码如下：
+
+```python
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        nr = len(grid)
+        if nr == 0:
+            return 0
+        nc = len(grid[0])
+
+        num_islands = 0
+        for r in range(nr):
+            for c in range(nc):
+                if grid[r][c] == "0":
+                    continue
+                num_islands += 1
+                grid[r][c] = "0"
+                neighbors = collections.deque([(r, c)])
+                # 对邻居进行广度优先搜索
+                while neighbors:
+                    row, col = neighbors.popleft()
+                    for x, y in [(row - 1, col), (row + 1, col), (row, col - 1), (row, col + 1)]:
+                        if 0 <= x < nr and 0 <= y < nc and grid[x][y] == "1":
+                            neighbors.append((x, y))
+                            grid[x][y] = "0"
+        return num_islands
+```
 
 
-### Leetcode 695. 岛屿的最大面积
 
-> [Leetcode 695. 岛屿的最大面积](https://leetcode-cn.com/problems/max-area-of-island/ "Leetcode 695. 岛屿的最大面积")
+### 695. 岛屿的最大面积
+
+> [695. 岛屿的最大面积](https://leetcode-cn.com/problems/max-area-of-island/ "695. 岛屿的最大面积")
 
 一、题目
 
@@ -121,9 +162,9 @@ class Solution:
 
 
 
-### Leetcode 463. 岛屿的周长
+### 463. 岛屿的周长
 
-> [Leetcode 463. 岛屿的周长](https://leetcode-cn.com/problems/island-perimeter/ "Leetcode 463. 岛屿的周长")
+> [463. 岛屿的周长](https://leetcode-cn.com/problems/island-perimeter/ "463. 岛屿的周长")
 
 一、题目
 
@@ -160,9 +201,9 @@ class Solution:
 
 
 
-### Leetcode 130. 被围绕的区域
+### 130. 被围绕的区域
 
-> [Leetcode 130. 被围绕的区域](https://leetcode-cn.com/problems/surrounded-regions/ "Leetcode 130. 被围绕的区域")
+> [130. 被围绕的区域](https://leetcode-cn.com/problems/surrounded-regions/ "130. 被围绕的区域")
 
 一、题目
 
@@ -221,9 +262,9 @@ class Solution:
 
 
 
-### Leetcode 79. 单词搜索
+### 79. 单词搜索
 
-> [Leetcode 79. 单词搜索](https://leetcode-cn.com/problems/word-search/ "Leetcode 79. 单词搜索")
+> [79. 单词搜索](https://leetcode-cn.com/problems/word-search/ "79. 单词搜索")
 
 一、题目
 
@@ -285,9 +326,9 @@ class Solution:
 
 
 
-### Leetcode 46. 全排列
+### 46. 全排列
 
-> [Leetcode 46. 全排列](https://leetcode-cn.com/problems/permutations/ "Leetcode 46. 全排列")
+> [46. 全排列](https://leetcode-cn.com/problems/permutations/ "46. 全排列")
 
 一、题目
 
@@ -409,9 +450,9 @@ func dfs(nums []int, perm []int, used []bool, depth int) [][]int {
 
 
 
-### Leetcode 47. 全排列 II
+### 47. 全排列 II
 
-> [Leetcode 47. 全排列 II](https://leetcode-cn.com/problems/permutations-ii/ "Leetcode 47. 全排列 II")
+> [47. 全排列 II](https://leetcode-cn.com/problems/permutations-ii/ "47. 全排列 II")
 
 一、题目
 
@@ -465,9 +506,9 @@ class Solution:
 
 
 
-### Leetcode 39. 组合总数
+### 39. 组合总数
 
-> [Leetcode 39. 组合总和](https://leetcode-cn.com/problems/combination-sum/ "Leetcode 39. 组合总和")
+> [39. 组合总和](https://leetcode-cn.com/problems/combination-sum/ "39. 组合总和")
 
 一、题目
 
@@ -552,9 +593,9 @@ class Solution:
 
 
 
-### Leetcode 40. 组合总数 II
+### 40. 组合总数 II
 
-> [Leetcode 40. 组合总和 II](https://leetcode-cn.com/problems/combination-sum-ii/ "Leetcode 40. 组合总和 II")
+> [40. 组合总和 II](https://leetcode-cn.com/problems/combination-sum-ii/ "40. 组合总和 II")
 
 一、题目
 
@@ -613,9 +654,9 @@ class Solution:
 
 
 
-### Leetcode 77. 组合
+### 77. 组合
 
-> [Leetcode 77. 组合](https://leetcode-cn.com/problems/combinations/ "Leetcode 77. 组合")
+> [77. 组合](https://leetcode-cn.com/problems/combinations/ "77. 组合")
 
 一、题目
 
@@ -697,9 +738,9 @@ for i in range(start, n - (k - depth) + 2):
 
 
 
-### Leetcode 78. 子集
+### 78. 子集
 
-> [Leetcode 78. 子集](https://leetcode-cn.com/problems/subsets/ "Leetcode 78. 子集")
+> [78. 子集](https://leetcode-cn.com/problems/subsets/ "78. 子集")
 
 一、题目
 
@@ -751,9 +792,9 @@ class Solution:
 
 
 
-### Leetcode 90. 子集 II
+### 90. 子集 II
 
-> [Leetcode 90. 子集 II](https://leetcode-cn.com/problems/subsets-ii/ "Leetcode 90. 子集 II")
+> [90. 子集 II](https://leetcode-cn.com/problems/subsets-ii/ "90. 子集 II")
 
 一、题目
 
@@ -806,9 +847,9 @@ class Solution:
 
 
 
-### Leetcode 60. 第k个排列
+### 60. 第k个排列
 
-> [Leetcode 60. 第k个排列](https://leetcode-cn.com/problems/permutation-sequence/ "Leetcode 60. 第k个排列")
+> [60. 第k个排列](https://leetcode-cn.com/problems/permutation-sequence/ "60. 第k个排列")
 
 一、题目
 
@@ -905,9 +946,9 @@ class Solution:
 
 
 
-### Leetcode 93. 复原IP地址
+### 93. 复原IP地址
 
-> [Leetcode 93. 复原IP地址](https://leetcode-cn.com/problems/restore-ip-addresses/ "Leetcode 93. 复原IP地址")
+> [93. 复原IP地址](https://leetcode-cn.com/problems/restore-ip-addresses/ "93. 复原IP地址")
 
 一、题目
 
@@ -1023,9 +1064,9 @@ func restore(s string, ip []int, start int, no int) []string {
 
 
 
-### Leetcode 17. 电话号码的字母组合
+### 17. 电话号码的字母组合
 
-> [Leetcode 17. 电话号码的字母组合](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/ "Leetcode 17. 电话号码的字母组合")
+> [17. 电话号码的字母组合](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/ "17. 电话号码的字母组合")
 
 一、题目
 
@@ -1081,9 +1122,9 @@ class Solution:
 
 
 
-### Leetcode 22. 括号生成
+### 22. 括号生成
 
-> [Leetcode 22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)
+> [22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)
 
 一、题目
 
@@ -1148,7 +1189,7 @@ class Solution:
 
 
 
-## 其他编程题
+## 其他
 
 ### 奇怪的电梯
 
